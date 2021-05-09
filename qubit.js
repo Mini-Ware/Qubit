@@ -5,7 +5,6 @@ filter = new Filter();
 filter.removeWords('nazi');
 const Discord = require('discord.js');
 const client = new Discord.Client();
-client.login("ODI2MDMxMzc0NzY2NDQwNDU5.YGGjqg.FAM2OcDS9Kco1vAqJO10jnrfaP8");
 client.on('ready', init => {
 	client.user.setActivity("q!help", {
   type: "STREAMING",
