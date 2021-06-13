@@ -5,3 +5,4 @@ Style: cursive, fraktur, invert</br>
 Fun: riddle, joke, quote</br>
 Media: spotify, youtube</br></br>
 More styles and features will be added soon!!
+ [Top.gg](https://top.gg/bot/826031374766440459)
