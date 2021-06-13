@@ -5,5 +5,5 @@ Style: cursive, fraktur, invert</br>
 Fun: riddle, joke, quote</br>
 Media: spotify, youtube</br></br>
 More styles and features will be added soon!!</br></br>
- [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&permissions=8&scope=bot)</br>
- [Verified by Top.gg](https://top.gg/bot/826031374766440459)
+>  [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&permissions=8&scope=bot)</br>
+>  [Verified by Top.gg](https://top.gg/bot/826031374766440459)
