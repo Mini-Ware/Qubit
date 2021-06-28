@@ -25,8 +25,9 @@ client.on('message', details => {
 	} else if (details.channel.type === 'dm') {
     details.channel.send("Sorry, this bot does not work in DM. You can only use this bot in a server.")
 		return;
-	}
-  check(details);
+	}else if (details.content.startsWith("q!")){
+    check(details);
+  }
 });
 function check(details){
   const command = details.content.substr(2);
@@ -256,14 +257,14 @@ function check(details){
 			name: 'Random',
 			value: '`decide`, `dice`, `8ball`',
 		},
-		{
-			name: 'Style',
-			value: '`cursive`, `fraktur`, `invert`',
+    {
+			name: 'Fun',
+			value: '`riddle`, `quote`, `joke`, `pickup`',
 			inline: false,
 		},
 		{
-			name: 'Fun',
-			value: '`riddle`, `joke`, `quote`',
+			name: 'Style',
+			value: '`cursive`, `fraktur`, `invert`',
 			inline: false,
 		},
 		{
