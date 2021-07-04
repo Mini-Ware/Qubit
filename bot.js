@@ -45,7 +45,7 @@ function check(details){
       details.react("🚫");
     }
   }else if (command.toLowerCase()=="invite"){
-    details.channel.send("https://discord.com/oauth2/authorize?client_id=826031374766440459&permissions=8&scope=bot");
+    details.channel.send("https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520");
     details.react("📧");
   }else if (command.toLowerCase()=="8ball"){
     details.channel.send("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
