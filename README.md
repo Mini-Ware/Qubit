@@ -3,7 +3,7 @@ Qubit is a simple discord utility bot which can help you make decisions, style y
 Random: decide, dice, 8ball</br>
 Style: cursive, fraktur, invert</br>
 Fun: riddle, joke, quote</br>
-Media: spotify, youtube, gif</br></br>
+Media: spotify, youtube</br></br>
 More styles and features will be added soon!!</br></br>
- [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&permissions=8&scope=bot)</br>
+ [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)</br>
  [Verified by Top.gg](https://top.gg/bot/826031374766440459)
