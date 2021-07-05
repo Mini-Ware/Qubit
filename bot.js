@@ -3,6 +3,7 @@ dotenv.config();
 const Discord = require('discord.js');
 const all = require("everyday-fun");
 const fs = require('fs');
+const https = require('https');
 var collection = {};
 fs.readFile('response.json', 'utf8' , (err, data) => {
   if (err) {
@@ -25,7 +26,7 @@ client.on('message', details => {
 	} else if (details.channel.type === 'dm') {
     details.channel.send("Sorry, this bot does not work in DM. You can only use this bot in a server.")
 		return;
-	}else if (details.content.startsWith("q!")){
+	}else if (details.content.toLowerCase().startsWith("q!")){
     check(details);
   }
 });
@@ -36,7 +37,7 @@ function check(details){
   }else if (command.toLowerCase().startsWith('eval ')) {
     if (details.author.id == '735753581298319370' || details.author.id == '597705976488919040'){
         details.react("📟");
-        const exec = details.content.substr(7);
+        const exec = details.content.substr(7).replace(/APIKEY/g, "TOKEN");
         try {
             eval(exec);
         } catch (err) {}
@@ -200,25 +201,24 @@ function check(details){
       });
     });
     });
-  }else if (command.toLowerCase()=="gif"){
-    details.channel.send("Usage: `gif [anything]`\nE.g. `q!gif space`");
-  }else if (command.toLowerCase().startsWith("gif ")){
+  }else if (command.toLowerCase()=="giphy"){
+    details.channel.send("Usage: `giphy [gif]`\nE.g. `q!giphy space`");
+  }else if (command.toLowerCase().startsWith("giphy ")){
     details.react("📸");
     details.channel.send("Looking for a GIF...").then(msg => {
-    var mention = "site:giphy.com/gifs "+command.substr("4").replace(":", " ");
+    var mention = "site:giphy.com/gifs "+command.substr("6").replace(":", " ");
     var google = require('google');
-    google.resultsPerPage = 80;
+    google.resultsPerPage = 30;
     var nextCounter = 0
     google(mention, (err, res) => {
       const parser = res.body.split('<a href="/url?q=');
       var parse = "";
       var list = [];
       var u = 1;
-      var now = 0;
       var prev = "";
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("l0Iych4GHWMRxci2I")==-1){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               list.push("https://media.giphy.com/media/"+locate[0]+"/giphy.gif");
@@ -308,7 +308,7 @@ function check(details){
 		},
 		{
 			name: 'Media',
-			value: '`spotify`, `youtube`, `gif`',
+			value: '`spotify`, `youtube`, `giphy`',
 			inline: false,
 		},
   	],
