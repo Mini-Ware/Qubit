@@ -216,14 +216,26 @@ function check(details){
       var list = [];
       var u = 1;
       var prev = "";
+      var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("l0Iych4GHWMRxci2I")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("l0Iych4GHWMRxci2I")==-1){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
+              const name = parse[0].replace("https://giphy.com/gifs/", "").split("-");
+              name.pop();
+              var caplimit = 0;
+              while (caplimit <= (name.length-1)){
+                if (name[caplimit] != ""){
+                  name[caplimit] = name[caplimit][0].toUpperCase() + name[caplimit].slice(1)
+                }
+                caplimit = caplimit+1;
+              }
+              title.push(name.join(" "));
               list.push("https://media.giphy.com/media/"+locate[0]+"/giphy.gif");
             }else{
               const locate = parse[0].split("/").reverse();
+              title.push("Unknown");
               list.push("https://media.giphy.com/media/"+locate[0]+"/giphy.gif");
             }
           }
@@ -232,11 +244,21 @@ function check(details){
       }
       if (list.length == 0){
           result = "Sorry, no GIFs could be found";
+          msg.edit(result);
+          return;
       }else{
         const randomgif = Math.floor(Math.random()*list.length);
         result=list[randomgif];
+        header=title[randomgif]
       }
-      msg.edit(result.replace("%3F", "?").replace("%3D", "="))
+      msg.delete();
+      msg.channel.send({ embed: {
+        title: header,
+        color: '#221C35',
+        image: {
+          url: result.replace("%3F", "?").replace("%3D", "=")
+        }
+      }});
     });
     });
   }else if (command.toLowerCase()=="decide"){
