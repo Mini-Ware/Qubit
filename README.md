@@ -6,3 +6,4 @@ Fun: riddle, joke, quote</br>
 Media: spotify, youtube, giphy</br></br>
 More styles and features will be added soon!!</br></br>
  [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)</br>
+ [Verified by Top.gg](https://top.gg/bot/826031374766440459)
