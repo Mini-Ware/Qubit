@@ -45,9 +45,9 @@ function check(details){
       details.channel.send("Access denied");
       details.react("🚫");
     }
-  }else if (command.toLowerCase()=="invite"){
-    details.channel.send("https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520");
-    details.react("📧");
+  }else if (command.toLowerCase()=="project"){
+    details.channel.send("https://github.com/Mini-Ware/qubit");
+    details.react("🤝");
   }else if (command.toLowerCase()=="8ball"){
     details.channel.send("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
   }else if (command.toLowerCase().startsWith("8ball")){
@@ -222,7 +222,8 @@ function check(details){
           if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("l0Iych4GHWMRxci2I")==-1){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
-              const name = parse[0].replace("https://giphy.com/gifs/", "").split("-");
+              var tag = parse[0].split("/").reverse()
+              var name = tag[0].split("-");
               name.pop();
               var caplimit = 0;
               while (caplimit <= (name.length-1)){
@@ -330,16 +331,17 @@ function check(details){
 		},
 		{
 			name: 'Media',
-			value: '`spotify`, `youtube`, `giphy`',
+			value: '`spotify`, `youtube`, `giphy`\n\n[Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)',
 			inline: false,
 		},
   	],
       image: {
         url: "https://media.tenor.com/images/f1fd8cd005c0139679b161c7e022212d/tenor.gif"
+      },
+      footer: {
+        text: "To contribute, use q!project"
       }
-    ,footer: {
-      text:"To add this bot, use q!invite"
-    }
     }});
+    details.react("📧");
   }
 }
