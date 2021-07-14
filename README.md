@@ -2,6 +2,6 @@ Qubit is a simple discord utility bot which can help you make decisions, play mi
 ![](https://cdn.discordapp.com/attachments/727146283097260084/853142328864931870/ezgif.com-gif-maker15.gif)</br>
 Random: decide, dice, 8ball, topic</br>
 Fun: riddle, joke, quote</br>
-Economy: claw, darts, fish, stats (Coming soon)</br>
-Media: spotify, youtube, giphy</br></br>
+Game: claw, darts, fish, stats (Coming soon)</br>
+Search: spotify, youtube, giphy</br></br>
 More styles and features will be added soon!!
