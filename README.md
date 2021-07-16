@@ -4,4 +4,6 @@ Random: decide, dice, 8ball, topic</br>
 Fun: riddle, joke, quote</br>
 Economy: rps, coinflip, stats</br>
 Search: spotify, youtube, giphy</br></br>
-More styles and features will be added soon!!
+More styles and features will be added soon!!</br></br>
+ [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)</br>
+ [Verified by Top.gg](https://top.gg/bot/826031374766440459)
