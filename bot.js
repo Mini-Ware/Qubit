@@ -175,7 +175,7 @@ function check(details){
       if (err){
         details.channel.send("Sorry, no information could be retrieved");
       }else{
-        if (data.search("%") != -1 || data.search("No match") != -1){
+        if (data.search("%") != -1 || data.search("No match") != -1 || data.search("NOT FOUND") != -1){
           var k = "Sorry, no information could be retrieved";
         }else if (data.search(">") != -1){
           const q = data.split(">");
@@ -196,61 +196,134 @@ function check(details){
   }else if (command.startsWith("stat")){
     findOneListingByName(mongo, details.author.id);
     mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-    details.channel.send("Rank: ???\nEnergy: "+(result.credit).toString()+"\\⚡");
+      mongo.db("player").collection("score").find({}).toArray(function(err, result) {
+        var idarray = [];
+        var scorearray = [];
+        var tmp = "";
+        var n = 0;
+        var x = 0;
+        var ownid = 0;
+        while (n < result.length){
+          if (result[n]._id == details.author.id){
+            ownid = n;
+          }
+          idarray.push(result[n]._id);
+          scorearray.push(result[n].credit);
+          n = n+1;
+        }
+        while (x <= 9 && x <= idarray.length - 1) {
+          x = x + 1;
+          var found = 1;
+          var k = 0;
+          while (k <= idarray.length - 1) {
+            if (scorearray[ownid] < scorearray[k] || (n > k && scorearray[ownid] == scorearray[k])) {
+              found = found + 1;
+            }
+            k = k + 1;
+          }
+        }
+        details.channel.send("Rank: "+(found-1).toString()+"\nID: "+details.author.id+"\nMoney: $"+scorearray[ownid].toString());
+      });
     });
-    details.react("📊");
-  }else if (command.toLowerCase()=="rps"){
-    details.channel.send("Usage: `rps [rock/paper/scissors]`\nE.g. `q!rps rock`");
-  }else if (command.toLowerCase().startsWith("rps")){
+    details.react("💳");
+  }else if (command.startsWith("lb")){
     findOneListingByName(mongo, details.author.id);
-    const option = command.substr(4).toLowerCase();
-    const choice = ["Rock","Paper","Scissors"];
-    const compgen = Math.floor(Math.random()*choice.length);
-    const compopt = choice[compgen].toLowerCase();
-    if (option == "rock" || option == "paper" || option == "scissors"){
-      if(compopt == option){
-        details.channel.send("Computer: "+choice[compgen]+"\nIts a draw! (+0\\⚡)");
-      }else{
-        if ((option == "rock" && compopt == "paper") || (option == "paper" && compopt == "scissors") || (option == "scissors" && compopt == "rock")){
-          details.channel.send("Computer: "+choice[compgen]+"\nYou lost! (-3\\⚡)");
-          mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-3})
-          })
-        }else{
-          details.channel.send("Computer: "+choice[compgen]+"\nYou won! (+5\\⚡)");
-          mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
-          })
+    mongo.db("player").collection("score").find({}).toArray(function(err, result) {
+      var idarray = [];
+      var scorearray = [];
+      var tmp = "";
+      var n = 0;
+      var x = 0;
+      while (n < result.length){
+        idarray.push(result[n]._id);
+        scorearray.push(result[n].credit);
+        n = n+1;
+      }
+      while (x <= 9 && x <= idarray.length - 1) {
+        x = x + 1;
+        n = 0;
+        while (n <= idarray.length - 1) {
+          var found = 1;
+          var k = 0;
+          while (k <= idarray.length - 1) {
+            if (scorearray[n] < scorearray[k] || (n > k && scorearray[n] == scorearray[k])) {
+              found = found + 1;
+            }
+            k = k + 1;
+          }
+          if (found == x) {
+            tmp +='\n#' +found.toString() +' | ' +idarray[n] +' ($' +scorearray[n]+')';
+          }
+          n = n + 1;
         }
       }
-    }else{
-      details.channel.send("Invalid");
-    }
-    details.react("🪨");
-  }else if (command.toLowerCase()=="coinflip"){
-    details.channel.send("Usage: `coinflip [head/tails]`\nE.g. `q!coinflip head`");
-  }else if (command.toLowerCase().startsWith("coinflip")){
+      details.channel.send("__Top 10 Astronomer__"+tmp);
+    });
+    details.react("📊");
+  }else if (command.toLowerCase().startsWith("scan")){
     findOneListingByName(mongo, details.author.id);
-    const option = command.substr(9).toLowerCase();
-    const choice = ["Head","Tails"];
-    const compgen = Math.floor(Math.random()*choice.length);
-    const compopt = choice[compgen].toLowerCase();
-    if (option == "tails" || option == "head"){
-      if(compopt == option){
-        details.channel.send("Computer: "+choice[compgen]+"\nYou won! (+5\\⚡)");
-        mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+    var planets = ["mars","jupiter","pluto","saturn","venus"];
+    const planetid = Math.floor(Math.random()*planets.length);
+    const outcome = Math.floor(Math.random()*2);
+    if (outcome != 1){
+      details.channel.send("You have scanned the surface of "+planets[planetid]+" and discovered organic matter! Awesome! (+$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
             updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
-        })
-      }else{
-        details.channel.send("Computer: "+choice[compgen]+"\nYou lost! (-3\\⚡)");
-        mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-3})
-        })
-      }
+      })
     }else{
-      details.channel.send("Invalid");
+      details.channel.send("You have scanned the surface of "+planets[planetid]+" and found nothing! (-$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+            if (result.credit-5 >= 0){
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+            }else{
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+            }
+      })
     }
-    details.react("🪙");
+    details.react("🔭");
+  }else if (command.toLowerCase().startsWith("launch")){
+    findOneListingByName(mongo, details.author.id);
+    var orbit = ["rocket","satalite","space station"];
+    const orbitid = Math.floor(Math.random()*orbit.length);
+    const outcome = Math.floor(Math.random()*2);
+    if (outcome != 1){
+      details.channel.send("You have launched a "+orbit[orbitid]+" and it entered into space! Great Job! (+$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
+      })
+    }else{
+      details.channel.send("You have launched a "+orbit[orbitid]+" and it crashed! (-$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+            if (result.credit-5 >= 0){
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+            }else{
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+            }
+      })
+    }
+    details.react("🛰️");
+  }else if (command.toLowerCase().startsWith("hack")){
+    findOneListingByName(mongo, details.author.id);
+    var device = ["NASA and found evidence of aliens","the US Government and stole some documents","Google with an exploit from the dark web"];
+    var prodevice = ["NASA with HTML","the US Government with random scripts from the internet","Google with inspect element"];
+    const deviceid = Math.floor(Math.random()*device.length);
+    const outcome = Math.floor(Math.random()*2);
+    if (outcome != 1){
+      details.channel.send("You hacked into "+device[deviceid]+"! Nice! (+$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
+      })
+    }else{
+      details.channel.send("You have been caught trying to hack into "+prodevice[deviceid]+", what a noob! (-$5)")
+      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
+            if (result.credit-5 >= 0){
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+            }else{
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+            }
+      })
+    }
+    details.react("⚒️");
   }else if (command.toLowerCase()=="8ball"){
     details.channel.send("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
   }else if (command.toLowerCase().startsWith("8ball")){
@@ -281,11 +354,6 @@ function check(details){
     const jokemsg = collection.joke[jokenum]
     details.channel.send(jokemsg);
     details.react("🤡");
-  }else if (command.toLowerCase().startsWith("compliment")){
-    const toastnum = Math.floor(Math.random()*collection.toast.length)
-    const toastmsg = collection.toast[toastnum]
-    details.channel.send(toastmsg);
-    details.react("🫂");
   }else if (command.toLowerCase().startsWith("pickup")){
     const pickupnum = Math.floor(Math.random()*collection.pickup.length)
     const pickupmsg = collection.pickup[pickupnum]
@@ -567,6 +635,14 @@ function check(details){
     var plot = Math.floor(Math.random()*range)+1
     details.channel.send(plot.toString());
     details.react("🎲");
+  }else if (command.toLowerCase().startsWith("flip")){
+    var land = Math.floor(Math.random()*2)
+    if (land == 1){
+      details.channel.send("Head");
+    }else{
+      details.channel.send("Tails");
+    }
+    details.react("🪙");
   }else if (command.toLowerCase()=="help"){
     details.channel.send({ embed: {
       color: '#221C35',
@@ -579,17 +655,17 @@ function check(details){
       fields: [
 		{
 			name: '[*️⃣] Random',
-			value: '`decide`, `dice`, `8ball`, `topic`, `quote`',
+			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
       inline: true,
 		},
     {
 			name: '[#️⃣] Fun',
-			value: '`riddle`, `joke`, `roast`, `compliment`, `pickup`',
+			value: '`riddle`, `joke`, `roast`, `topic`, `pickup`',
 			inline: false,
 		},
 		{
 			name: '[📶] Economy',
-			value: '`rps`, `coinflip`, `hack`, `stat`, `lb`',
+			value: '`scan`, `launch`, `hack`, `stat`, `lb`',
 			inline: false,
 		},
 		{
