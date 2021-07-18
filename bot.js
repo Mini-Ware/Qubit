@@ -70,8 +70,6 @@ function check(details){
   }else if (command.toLowerCase()=="project"){
     details.channel.send("https://github.com/Mini-Ware/Qubit");
     details.react("🤝");
-  }else if (command.toLowerCase()=="encode"){
-    details.channel.send("Usage: `encode [b64/bin/hex] [string]`\nE.g. `q!encode b64 sample`");
   }else if (command.toLowerCase().startsWith("encode b64")){
     const mention = command.substr(11);
     var b64 = Buffer.from(mention, 'utf-8').toString('base64');
@@ -79,6 +77,7 @@ function check(details){
         b64 = b64.substring(0,2039)+"..."
     }
     details.channel.send(b64);
+    details.react("🔒");
   }else if (command.toLowerCase().startsWith("encode bin")){
     const mention = command.substr(11);
     var n = 0;
@@ -95,6 +94,7 @@ function check(details){
         fullstr = fullstr.substring(0,2039)+"..."
     }
     details.channel.send(fullstr);
+    details.react("🔒");
   }else if (command.toLowerCase().startsWith("encode hex")){
     const mention = command.substr(11);
     var bhex = Buffer.from(mention, 'utf-8').toString('hex');
@@ -102,11 +102,13 @@ function check(details){
         bhex = bhex.substring(0,2039)+"..."
     }
     details.channel.send(bhex.toUpperCase());
-  }else if (command.toLowerCase().toLowerCase()=="decode"){
-    details.channel.send("Usage: `decode [b64/bin/hex] [string]`\nE.g. `q!decode b64 c2FtcGxl`");
+    details.react("🔒");
+  }else if (command.toLowerCase().startsWith("encode")){
+    details.channel.send("Usage: `encode [b64/bin/hex] [string]`\nE.g. `q!encode b64 sample`");
   }else if (command.toLowerCase().startsWith("decode b64")){
     const mention = command.substr(11);
     details.channel.send(Buffer.from(mention, 'base64').toString('utf-8'));
+    details.react("🔑");
   }else if (command.toLowerCase().startsWith("decode bin")){
     const mention = command.substr(11);
     var fullstr = "";
@@ -133,11 +135,13 @@ function check(details){
         n = n+1;
     }
     details.channel.send(fullstr);
+    details.react("🔑");
   }else if (command.toLowerCase().startsWith("decode hex")){
     const mention = command.substr(11);
     details.channel.send(Buffer.from(mention, 'hex').toString('utf-8'));
-  }else if (command.toLowerCase().toLowerCase()=="userinfo"){
-    details.channel.send("info");
+    details.react("🔑");
+  }else if (command.toLowerCase().startsWith("decode")){
+    details.channel.send("Usage: `decode [b64/bin/hex] [string]`\nE.g. `q!decode b64 c2FtcGxl`");
   }else if (command.toLowerCase()=="ip"){
     details.channel.send("Usage: `ip [domain]`\nE.g. `q!ip www.google.com`");
   }else if (command.toLowerCase().startsWith("ip")){
@@ -163,21 +167,21 @@ function check(details){
       if (err){
         details.channel.send("Sorry, no information could be retrieved");
       }else{
-        if (data.search(">") != -1){
+        if (data.search("%") != -1 || data.search("No match") != -1){
+          var k = "Sorry, no information could be retrieved";
+        }else if (data.search(">") != -1){
           const q = data.split(">");
-          var k = q[0];
+          var k = q[0].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
         }else{
-          var k = data;
+          var k = data.replace(/https:\/\//g, "").replace(/http:\/\//g, "");
         }
-        if (k.length > 1994){
-          k = "```"+k.substring(0,1994)+"```";
-        }else{
-          k = "```"+k+"```";
+        if (k.length > 2000){
+          k = k.substring(0,1997)+"...";
         }
         details.channel.send(k);
       }
     });
-    details.react("📡");
+    details.react("🌐");
   }else if (command.startsWith("stat")){
     findOneListingByName(mongo, details.author.id);
     mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
@@ -584,7 +588,7 @@ function check(details){
 		},
 		{
 			name: '[🔣] Tools',
-			value: '`ip`, `whois`, `encode`, `decode`, `userinfo`',
+			value: '`ip`, `whois`, `encode`, `decode`, `eval`',
 			inline: false,
 		},
 		{
