@@ -143,7 +143,7 @@ function check(details){
   }else if (command.toLowerCase().startsWith("decode")){
     details.channel.send("Usage: `decode [b64/bin/hex] [string]`\nE.g. `q!decode b64 c2FtcGxl`");
   }else if (command.toLowerCase()=="ip"){
-    details.channel.send("Usage: `ip [domain]`\nE.g. `q!ip www.google.com`");
+    details.channel.send("Usage: `ip [domain]`\nE.g. `q!ip google.com`");
   }else if (command.toLowerCase().startsWith("ip")){
     const mention = command.substr(3);
     const dns = require("dns");
@@ -153,12 +153,20 @@ function check(details){
         details.channel.send("Sorry, network is unreachable");
         return;
       }else{
-        details.channel.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl);
+        details.channel.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(msg => {
+          dns.resolve6(mention, { ttl: true }, (err, addresses) => {
+            if (err){
+             return;
+            }else{
+              msg.edit(msg.content+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl);
+            }
+          });
+        });
       }
     });
     details.react("📡");
   }else if (command.toLowerCase()=="whois"){
-    details.channel.send("Usage: `whois [domain]`\nE.g. `q!whois google.com`");
+    details.channel.send("Usage: `whois [domain/ip]`\nE.g. `q!whois google.com`");
   }else if (command.toLowerCase().startsWith("whois")){
     const mention = command.substr(6);
     const dns = require("dns");
@@ -172,6 +180,9 @@ function check(details){
         }else if (data.search(">") != -1){
           const q = data.split(">");
           var k = q[0].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
+        }else if (data.search("NetRange: ") != -1){
+          const q = data.split("NetRange: ");
+          var k = "NetRange: "+q[1].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
         }else{
           var k = data.replace(/https:\/\//g, "").replace(/http:\/\//g, "");
         }
@@ -352,7 +363,7 @@ function check(details){
     });
     });
   }else if (command.toLowerCase()=="youtube"){
-    details.channel.send("Usage: `youtube [video]`\nE.g. `q!youtube nasa`");
+    details.channel.send("Usage: `youtube [video]`\nE.g. `q!youtube rover landing`");
   }else if (command.toLowerCase().startsWith("youtube ")){
     details.react("📺");
     details.channel.send("Fetching relevant videos...").then(msg => {
@@ -487,7 +498,7 @@ function check(details){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               locate[0] = locate[0].replace("/", "")
