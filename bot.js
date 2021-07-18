@@ -70,10 +70,118 @@ function check(details){
   }else if (command.toLowerCase()=="project"){
     details.channel.send("https://github.com/Mini-Ware/Qubit");
     details.react("🤝");
+  }else if (command.toLowerCase()=="encode"){
+    details.channel.send("Usage: `encode [b64/bin/hex] [string]`\nE.g. `q!encode b64 sample`");
+  }else if (command.toLowerCase().startsWith("encode b64")){
+    const mention = command.substr(11);
+    var b64 = Buffer.from(mention, 'utf-8').toString('base64');
+    if (b64.length > 2048){
+        b64 = b64.substring(0,2039)+"..."
+    }
+    details.channel.send(b64);
+  }else if (command.toLowerCase().startsWith("encode bin")){
+    const mention = command.substr(11);
+    var n = 0;
+    var fullstr = "";
+    while (n <= (mention.length-1)){
+        var sus = parseInt(mention.charCodeAt(n)).toString(2);
+        while (sus.length < 8){
+          sus = "0"+sus;
+        }
+        fullstr += sus;
+        n = n+1;
+    }
+    if (fullstr.length > 2048){
+        fullstr = fullstr.substring(0,2039)+"..."
+    }
+    details.channel.send(fullstr);
+  }else if (command.toLowerCase().startsWith("encode hex")){
+    const mention = command.substr(11);
+    var bhex = Buffer.from(mention, 'utf-8').toString('hex');
+    if (bhex.length > 2048){
+        bhex = bhex.substring(0,2039)+"..."
+    }
+    details.channel.send(bhex.toUpperCase());
+  }else if (command.toLowerCase().toLowerCase()=="decode"){
+    details.channel.send("Usage: `decode [b64/bin/hex] [string]`\nE.g. `q!decode b64 c2FtcGxl`");
+  }else if (command.toLowerCase().startsWith("decode b64")){
+    const mention = command.substr(11);
+    details.channel.send(Buffer.from(mention, 'base64').toString('utf-8'));
+  }else if (command.toLowerCase().startsWith("decode bin")){
+    const mention = command.substr(11);
+    var fullstr = "";
+    var n = 0;
+    var midstr = "";
+    var stastr = mention;
+    var b = 0;
+    var c = 0;
+    var a = 0;
+    var coolstr = "";
+    while (b < Math.round(mention.length/8)){
+      coolstr = coolstr+stastr[a];
+      a = a+1;
+      c = c+1;
+      if (c >= 8){
+        c = 0;
+        b = b+1;
+        coolstr = coolstr+" ";
+      }
+    }
+    midstr = coolstr.split("").reverse().join("").substr(1).split("").reverse().join("").split(" ");
+    while (n <= (midstr.length-1)){
+        fullstr += String.fromCharCode(parseInt(midstr[n], 2))
+        n = n+1;
+    }
+    details.channel.send(fullstr);
+  }else if (command.toLowerCase().startsWith("decode hex")){
+    const mention = command.substr(11);
+    details.channel.send(Buffer.from(mention, 'hex').toString('utf-8'));
+  }else if (command.toLowerCase().toLowerCase()=="userinfo"){
+    details.channel.send("info");
+  }else if (command.toLowerCase()=="ip"){
+    details.channel.send("Usage: `ip [domain]`\nE.g. `q!ip www.google.com`");
+  }else if (command.toLowerCase().startsWith("ip")){
+    const mention = command.substr(3);
+    const dns = require("dns");
+    var ipresult = ["","","",""];
+    dns.resolve4(mention, { ttl: true }, (err, addresses) => {
+      if (err) {
+        details.channel.send("Sorry, network is unreachable");
+        return;
+      }else{
+        details.channel.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl);
+      }
+    });
+    details.react("📡");
+  }else if (command.toLowerCase()=="whois"){
+    details.channel.send("Usage: `whois [domain]`\nE.g. `q!whois google.com`");
+  }else if (command.toLowerCase().startsWith("whois")){
+    const mention = command.substr(6);
+    const dns = require("dns");
+    var whois = require('whois');
+    whois.lookup(mention, (err, data) => {
+      if (err){
+        details.channel.send("Sorry, no information could be retrieved");
+      }else{
+        if (data.search(">") != -1){
+          const q = data.split(">");
+          var k = q[0];
+        }else{
+          var k = data;
+        }
+        if (k.length > 1994){
+          k = "```"+k.substring(0,1994)+"```";
+        }else{
+          k = "```"+k+"```";
+        }
+        details.channel.send(k);
+      }
+    });
+    details.react("📡");
   }else if (command.startsWith("stat")){
     findOneListingByName(mongo, details.author.id);
     mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-    details.channel.send("ID: "+details.author.id+"\nEnergy: "+(result.credit).toString()+"\\⚡");
+    details.channel.send("Rank: ???\nEnergy: "+(result.credit).toString()+"\\⚡");
     });
     details.react("📊");
   }else if (command.toLowerCase()=="rps"){
@@ -158,11 +266,26 @@ function check(details){
     const jokemsg = collection.joke[jokenum]
     details.channel.send(jokemsg);
     details.react("🤡");
+  }else if (command.toLowerCase().startsWith("compliment")){
+    const toastnum = Math.floor(Math.random()*collection.toast.length)
+    const toastmsg = collection.toast[toastnum]
+    details.channel.send(toastmsg);
+    details.react("🫂");
+  }else if (command.toLowerCase().startsWith("pickup")){
+    const pickupnum = Math.floor(Math.random()*collection.pickup.length)
+    const pickupmsg = collection.pickup[pickupnum]
+    details.channel.send(pickupmsg);
+    details.react("💖");
   }else if (command.toLowerCase().startsWith("topic")){
     const topicnum = Math.floor(Math.random()*collection.topic.length)
     const topicmsg = collection.topic[topicnum]
     details.channel.send(topicmsg);
     details.react("💭");
+  }else if (command.toLowerCase().startsWith("roast")){
+    const roastnum = Math.floor(Math.random()*collection.roast.length)
+    const roastmsg = collection.roast[roastnum]
+    details.channel.send(roastmsg);
+    details.react("🔥");
   }else if (command.toLowerCase().startsWith("quote")){
     const quotemsg = all.getRandomQuote();
     details.channel.send(quotemsg["quote"]+" -"+quotemsg["author"]);
@@ -227,7 +350,7 @@ function check(details){
   }else if (command.toLowerCase()=="youtube"){
     details.channel.send("Usage: `youtube [video]`\nE.g. `q!youtube nasa`");
   }else if (command.toLowerCase().startsWith("youtube ")){
-    details.react("🎞️");
+    details.react("📺");
     details.channel.send("Fetching relevant videos...").then(msg => {
     var mention = "site:youtube.com/watch "+command.substr("8").replace(":", " ");
     var google = require('google');
@@ -284,7 +407,7 @@ function check(details){
   }else if (command.toLowerCase()=="giphy"){
     details.channel.send("Usage: `giphy [gif]`\nE.g. `q!giphy space`");
   }else if (command.toLowerCase().startsWith("giphy ")){
-    details.react("📸");
+    details.react("🎞️");
     details.channel.send("Looking for a GIF...").then(msg => {
     var mention = "site:giphy.com/gifs "+command.substr("6").replace(":", " ");
     var google = require('google');
@@ -299,7 +422,7 @@ function check(details){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("l0Iych4GHWMRxci2I")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               var tag = parse[0].split("/").reverse()
@@ -342,6 +465,68 @@ function check(details){
       }});
     });
     });
+  }else if (command.toLowerCase()=="pexels"){
+    details.channel.send("Usage: `pexels [image]`\nE.g. `q!pexels milky way`");
+  }else if (command.toLowerCase().startsWith("pexels ")){
+    details.react("📸");
+    details.channel.send("Looking for an image...").then(msg => {
+    var mention = "site:pexels.com/photo "+command.substr("7").replace(":", " ");
+    var google = require('google');
+    google.resultsPerPage = 30;
+    var nextCounter = 0
+    google(mention, (err, res) => {
+      const parser = res.body.split('<a href="/url?q=');
+      var parse = "";
+      var list = [];
+      var u = 1;
+      var prev = "";
+      var title = [];
+      while (u < (parser.length-1)){
+          parse = parser[u].split('&');
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1){
+            if (parse[0].search("-")!=-1){
+              const locate = parse[0].split("-").reverse();
+              locate[0] = locate[0].replace("/", "")
+              var tag = parse[0].split("/").reverse()
+              var name = tag[1].split("-");
+              name.pop();
+              var caplimit = 0;
+              while (caplimit <= (name.length-1)){
+                if (name[caplimit] != ""){
+                  name[caplimit] = name[caplimit][0].toUpperCase() + name[caplimit].slice(1)
+                }
+                caplimit = caplimit+1;
+              }
+              title.push(name.join(" "));
+              list.push("https://images.pexels.com/photos/"+locate[0]+"/pexels-photo-"+locate[0]+".jpeg");
+            }else{
+              const locate = parse[0].split("/").reverse();
+              title.push("Unknown");
+              list.push("https://images.pexels.com/photos/"+locate[0]+"/pexels-photo-"+locate[0]+".jpeg");
+            }
+          }
+          prev = parse[0]
+          u = u+1;
+      }
+      if (list.length == 0){
+          result = "Sorry, no images could be found";
+          msg.edit(result);
+          return;
+      }else{
+        const randomimage = Math.floor(Math.random()*list.length);
+        result=list[randomimage];
+        header=title[randomimage]
+      }
+      msg.delete();
+      msg.channel.send({ embed: {
+        title: header,
+        color: '#221C35',
+        image: {
+          url: result.replace("%3F", "?").replace("%3D", "=")
+        }
+      }});
+    });
+    });
   }else if (command.toLowerCase()=="decide"){
     details.channel.send("Usage: `decide [options]`\nE.g. `q!decide go jogging, watch movie, play games`");
   }else if (command.toLowerCase().startsWith("decide ")){
@@ -372,31 +557,42 @@ function check(details){
       color: '#221C35',
       title: "Qubit",
       description: "A simple discord utility bot",
+      thumbnail: {
+		    url: 'https://cdn.discordapp.com/avatars/826031374766440459/37a324d853cade9ee8fdd5b2b8e40ce7.webp?size=1024',
+	    },
       //https://discord.com/oauth2/authorize?client_id=826031374766440459&permissions=8&scope=bot
       fields: [
 		{
-			name: '*️⃣ Random',
-			value: '`decide`, `dice`, `8ball`, `topic`',
+			name: '[*️⃣] Random',
+			value: '`decide`, `dice`, `8ball`, `topic`, `quote`',
+      inline: true,
 		},
     {
-			name: '#️⃣ Fun',
-			value: '`riddle`, `joke`, `quote`',
+			name: '[#️⃣] Fun',
+			value: '`riddle`, `joke`, `roast`, `compliment`, `pickup`',
 			inline: false,
 		},
 		{
-			name: '📶 Economy',
-			value: '`rps`, `coinflip`, `stat`',
+			name: '[📶] Economy',
+			value: '`rps`, `coinflip`, `hack`, `stat`, `lb`',
 			inline: false,
 		},
 		{
-			name: '🎦 Media',
-			value: '`spotify`, `youtube`, `giphy`\n\n[Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)',
+			name: '[🎦] Media',
+			value: '`spotify`, `youtube`, `pexels`, `giphy`',
+			inline: true,
+		},
+		{
+			name: '[🔣] Tools',
+			value: '`ip`, `whois`, `encode`, `decode`, `userinfo`',
 			inline: false,
 		},
+		{
+			name: 'Important Links',
+			value: '[Add Qubit into your server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)\n[Join Coder\'s System server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)',
+			inline: false,
+		}
   	],
-      image: {
-        url: "https://media.tenor.com/images/f1fd8cd005c0139679b161c7e022212d/tenor.gif"
-      },
       footer: {
         text: "To contribute, use q!project"
       }
