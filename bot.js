@@ -2,29 +2,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 const Discord = require('discord.js');
 const all = require("everyday-fun");
-const { MongoClient } = require('mongodb');
-const uri = process.env.DB;
-const mongo = new MongoClient(uri);
-mongo.connect();
-async function createListing(mongo, newListing){
-    const result = await mongo.db("player").collection("score").insertOne(newListing);
-}
-async function findOneListingByName(mongo, nameOfListing) {
-    const result = await mongo.db("player").collection("score").findOne({ _id: nameOfListing });
-
-    if (result) {
-        console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
-        console.log(result);
-    } else {
-        createListing(mongo, { _id:nameOfListing, tag: details.author.tag, credit:0 })
-    }
-}
-async function updateListingByName(mongo, nameOfListing, updatedListing) {
-    const result = await mongo.db("player").collection("score").updateOne({ _id: nameOfListing }, { $set: updatedListing });
-
-    console.log(`${result.matchedCount} document(s) matched the query criteria.`);
-    console.log(`${result.modifiedCount} document(s) was/were updated.`);
-}
 const fs = require('fs');
 var collection = {};
 fs.readFile('response.json', 'utf8' , (err, data) => {
@@ -215,112 +192,42 @@ function check(details){
       }
     });
     details.react("🌐");
-  }else if (command.startsWith("stat")){
-    findOneListingByName(mongo, details.author.id);
-    mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-        details.channel.send("ID: "+details.author.id+"\nMoney: $"+(result.credit).toString());
-    });
-    details.react("💳");
-  }else if (command.startsWith("lb")){
-    findOneListingByName(mongo, details.author.id);
-    mongo.db("player").collection("score").find({}).toArray(function(err, result) {
-      var idarray = [];
-      var scorearray = [];
-      var tagarray = [];
-      var tmp = "";
-      var n = 0;
-      var x = 0;
-      while (n < result.length){
-        idarray.push(result[n]._id);
-        scorearray.push(result[n].credit);
-        tagarray.push(result[n].tag);
-        n = n+1;
+  }else if (command.toLowerCase()=="invert"){
+    details.channel.send("Usage: `invert [text]`\nE.g. `q!invert example`");
+  }else if (command.toLowerCase().startsWith("invert ")){
+    var string = command.substr(7);
+    const unicode = string.replace(/n/g, "u").replace(/d/g, "p").replace(/p/g, "d").replace(/q/g, "b").replace(/B/g, "q").replace(/D/g, "p").replace(/Q/g, "b").replace(/A/g, "∀").replace(/C/g, "Ɔ").replace(/E/g, "Ǝ").replace(/F/g, "Ⅎ").replace(/G/g, "ƃ").replace(/H/g, "H").replace(/I/g, "I").replace(/J/g, "ſ").replace(/K/g, "ʞ").replace(/L/g, "˥").replace(/M/g, "M").replace(/N/g, "N").replace(/O/g, "O").replace(/P/g, "Ԁ").replace(/R/g, "ɹ").replace(/S/g, "S").replace(/T/g, "┴").replace(/U/g, "∩").replace(/V/g, "Λ").replace(/W/g, "M").replace(/X/g, "X").replace(/Y/g, "⅄").replace(/Z/g, "Z").replace(/a/g, "ɐ").replace(/c/g, "ɔ").replace(/e/g, "ǝ").replace(/f/g, "ɟ").replace(/g/g, "ƃ").replace(/h/g, "ɥ").replace(/i/g, "ᴉ").replace(/j/g, "ɾ").replace(/k/g, "ʞ").replace(/l/g, "l").replace(/m/g, "ɯ").replace(/o/g, "o").replace(/q/g, "b").replace(/r/g, "ɹ").replace(/s/g, "s").replace(/t/g, "ʇ").replace(/u/g, "n").replace(/v/g, "ʌ").replace(/w/g, "ʍ").replace(/x/g, "x").replace(/y/g, "ʎ").replace(/z/g, "z").replace(/b/g, "q")
+    details.channel.send(unicode);
+    details.react("🪞");
+  }else if (command.toLowerCase()=="cursive"){
+    details.channel.send("Usage: `cursive [text]`\nE.g. `q!cursive example`");
+  }else if (command.toLowerCase().startsWith("cursive ")){
+    var string = command.substr(7);
+    const unicode = string.replace(/A/g, "𝓐").replace(/B/g, "𝓑").replace(/C/g, "𝓒").replace(/D/g, "𝓓").replace(/E/g, "𝓔").replace(/F/g, "𝓕").replace(/G/g, "𝓖").replace(/H/g, "𝓗").replace(/I/g, "𝓘").replace(/J/g, "𝓙").replace(/K/g, "𝓚").replace(/L/g, "𝓛").replace(/M/g, "𝓜").replace(/N/g, "𝓝").replace(/O/g, "𝓞").replace(/P/g, "𝓟").replace(/Q/g, "𝓠").replace(/R/g, "𝓡").replace(/S/g, "𝓢").replace(/T/g, "𝓣").replace(/U/g, "𝓤").replace(/V/g, "𝓥").replace(/W/g, "𝓦").replace(/X/g, "𝓧").replace(/Y/g, "𝓨").replace(/Z/g, "𝓩").replace(/a/g, "𝓪").replace(/b/g, "𝓫").replace(/c/g, "𝓬").replace(/d/g, "𝓭").replace(/e/g, "𝓮").replace(/f/g, "𝓯").replace(/g/g, "𝓰").replace(/h/g, "𝓱").replace(/i/g, "𝓲").replace(/j/g, "𝓳").replace(/k/g, "𝓴").replace(/l/g, "𝓵").replace(/m/g, "𝓶").replace(/o/g, "𝓸").replace(/p/g, "𝓹").replace(/q/g, "𝓺").replace(/r/g, "𝓻").replace(/s/g, "𝓼").replace(/t/g, "𝓽").replace(/u/g, "𝓾").replace(/v/g, "𝓿").replace(/w/g, "𝔀").replace(/x/g, "𝔁").replace(/y/g, "𝔂").replace(/z/g, "𝔃")
+    details.channel.send(unicode.replace(/n/g, "𝓷"));
+    details.react("\🖋");
+  }else if (command.toLowerCase()=="fraktur"){
+    details.channel.send("Usage: `fraktur [text]`\nE.g. `q!fraktur example`");
+  }else if (command.toLowerCase().startsWith("fraktur ")){
+    var string = command.substr(7);
+    const unicode = string.replace(/A/g, "𝔄").replace(/B/g, "𝔅").replace(/C/g, "ℭ").replace(/D/g, "𝔇").replace(/E/g, "𝔈").replace(/F/g, "𝔉").replace(/G/g, "𝔊").replace(/H/g, "ℌ").replace(/I/g, "ℑ").replace(/J/g, "𝔍").replace(/K/g, "𝔎").replace(/L/g, "𝔏").replace(/M/g, "𝔐").replace(/N/g, "𝔑").replace(/O/g, "𝔒").replace(/P/g, "𝔓").replace(/Q/g, "𝔔").replace(/R/g, "ℜ").replace(/S/g, "𝔖").replace(/T/g, "𝔗").replace(/U/g, "𝔘").replace(/V/g, "𝔙").replace(/W/g, "𝔚").replace(/X/g, "𝔛").replace(/Y/g, "𝔜").replace(/Z/g, "ℨ").replace(/a/g, "𝔞").replace(/b/g, "𝔟").replace(/c/g, "𝔠").replace(/d/g, "𝔡").replace(/e/g, "𝔢").replace(/f/g, "𝔣").replace(/g/g, "𝔤").replace(/h/g, "𝔥").replace(/i/g, "𝔦").replace(/j/g, "𝔧").replace(/k/g, "𝔨").replace(/l/g, "𝔩").replace(/m/g, "𝔪").replace(/o/g, "𝔬").replace(/p/g, "𝔭").replace(/q/g, "𝔮").replace(/r/g, "𝔯").replace(/s/g, "𝔰").replace(/t/g, "𝔱").replace(/u/g, "𝔲").replace(/v/g, "𝔳").replace(/w/g, "𝔴").replace(/x/g, "𝔵").replace(/y/g, "𝔶").replace(/z/g, "𝔷")
+    details.channel.send(unicode.replace(/n/g, "𝔫"));
+    details.react("🪶");
+  }else if (command.toLowerCase()=="altcap"){
+    details.channel.send("Usage: `altcap [text]`\nE.g. `q!altcap example`");
+  }else if (command.toLowerCase().startsWith("altcap ")){
+    var string = command.substr(7);
+    let letters = string.split("");
+    let n = 0;
+    while (n < letters.length){
+      if (Math.floor(Math.random()*2) == 1){
+        letters[n] = letters[n].toUpperCase();
       }
-      while (x <= 9 && x <= idarray.length - 1) {
-        x = x + 1;
-        n = 0;
-        while (n <= idarray.length - 1) {
-          var found = 1;
-          var k = 0;
-          while (k <= idarray.length - 1) {
-            if (scorearray[n] < scorearray[k] || (n > k && scorearray[n] == scorearray[k])) {
-              found = found + 1;
-            }
-            k = k + 1;
-          }
-          if (found == x) {
-            tmp +='\n#' +found.toString() +' | ' +tagarray[n] +' ($' +scorearray[n]+')';
-          }
-          n = n + 1;
-        }
-      }
-      details.channel.send("__Top 10 Accounts__"+tmp);
-    });
-    details.react("📊");
-  }else if (command.toLowerCase().startsWith("scan")){
-    findOneListingByName(mongo, details.author.id);
-    var planets = ["mars","jupiter","pluto","saturn","venus"];
-    const planetid = Math.floor(Math.random()*planets.length);
-    const outcome = Math.floor(Math.random()*2);
-    if (outcome != 1){
-      details.channel.send("You have scanned the surface of "+planets[planetid]+" and discovered organic matter! Awesome! (+$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
-      })
-    }else{
-      details.channel.send("You have scanned the surface of "+planets[planetid]+" and found nothing! (-$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
-            }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
-            }
-      })
+      n = n+1;
     }
-    details.react("🔭");
-  }else if (command.toLowerCase().startsWith("launch")){
-    findOneListingByName(mongo, details.author.id);
-    var orbit = ["rocket","satalite","space station"];
-    const orbitid = Math.floor(Math.random()*orbit.length);
-    const outcome = Math.floor(Math.random()*2);
-    if (outcome != 1){
-      details.channel.send("You have launched a "+orbit[orbitid]+" and it entered into space! Great Job! (+$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
-      })
-    }else{
-      details.channel.send("You have launched a "+orbit[orbitid]+" and it crashed! (-$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
-            }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
-            }
-      })
-    }
-    details.react("🛰️");
-  }else if (command.toLowerCase().startsWith("hack")){
-    findOneListingByName(mongo, details.author.id);
-    var device = ["NASA and found evidence of aliens","the US Government and stole some documents","Google with an exploit from the dark web"];
-    var prodevice = ["NASA with HTML","the US Government with random scripts from the internet","Google with inspect element"];
-    const deviceid = Math.floor(Math.random()*device.length);
-    const outcome = Math.floor(Math.random()*2);
-    if (outcome != 1){
-      details.channel.send("You hacked into "+device[deviceid]+"! Nice! (+$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
-      })
-    }else{
-      details.channel.send("You have been caught trying to hack into "+prodevice[deviceid]+", what a noob! (-$5)")
-      mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
-            }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
-            }
-      })
-    }
-    details.react("⚒️");
+    const unicode = letters.join("");
+    details.channel.send(unicode);
+    details.react("🏔️");
   }else if (command.toLowerCase()=="8ball"){
     details.channel.send("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
   }else if (command.toLowerCase().startsWith("8ball")){
@@ -661,8 +568,8 @@ function check(details){
 			inline: false,
 		},
 		{
-			name: '[📶] Economy',
-			value: '`scan`, `launch`, `hack`, `stat`, `lb`',
+			name: '[🔣] Style',
+			value: '`cursive`, `fraktur`, `invert`, `studly`',
 			inline: false,
 		},
 		{
@@ -671,8 +578,8 @@ function check(details){
 			inline: true,
 		},
 		{
-			name: '[🔣] Tools',
-			value: '`ip`, `whois`, `encode`, `decode`, `eval`',
+			name: '[📶] Network',
+			value: '`ip`, `whois`, `http`, `encode`, `decode`',
 			inline: false,
 		},
 		{
