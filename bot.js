@@ -16,7 +16,7 @@ async function findOneListingByName(mongo, nameOfListing) {
         console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
         console.log(result);
     } else {
-        createListing(mongo, { _id:nameOfListing, credit:0 })
+        createListing(mongo, { _id:nameOfListing, tag: details.author.tag, credit:0 })
     }
 }
 async function updateListingByName(mongo, nameOfListing, updatedListing) {
@@ -156,10 +156,17 @@ function check(details){
         details.channel.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(msg => {
           dns.resolve6(mention, { ttl: true }, (err, addresses) => {
             if (err){
-             return;
+              msg.channel.send({ embed: {
+                color: '#221C35',
+                description: msg.content.replace(/`/g, ""),
+              }});
             }else{
-              msg.edit(msg.content+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl);
+              msg.channel.send({ embed: {
+                color: '#221C35',
+                description: msg.content.replace(/`/g, "")+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl,
+              }});
             }
+            msg.delete();
           });
         });
       }
@@ -175,8 +182,9 @@ function check(details){
       if (err){
         details.channel.send("Sorry, no information could be retrieved");
       }else{
-        if (data.search("%") != -1 || data.search("No match") != -1 || data.search("NOT FOUND") != -1){
-          var k = "Sorry, no information could be retrieved";
+        if (data.search("%") != -1 || data.search("No match") != -1 || data.toLowerCase().search("not found") != -1){
+          details.channel.send("Sorry, no information could be retrieved");
+          return;
         }else if (data.search(">") != -1){
           const q = data.split(">");
           var k = q[0].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
@@ -186,44 +194,31 @@ function check(details){
         }else{
           var k = data.replace(/https:\/\//g, "").replace(/http:\/\//g, "");
         }
-        if (k.length > 2000){
-          k = k.substring(0,1997)+"...";
+        var j = k.split("\n")
+        var u = 0;
+        var h = [];
+        while (u < j.length){
+          if (j[u].search("Prohibited") != -1 || j[u].search("Comment") != -1 || j[u].search("#") != -1){
+            j[u] = "";
+          }
+          u = u+1;
         }
-        details.channel.send(k);
+        k = j.join("\n");
+        k = k.replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n");
+        if (k.length > 2045){
+          k = k.substring(0,2045)+"...";
+        }
+        details.channel.send({ embed: {
+          color: '#221C35',
+          description: k
+        }});
       }
     });
     details.react("🌐");
   }else if (command.startsWith("stat")){
     findOneListingByName(mongo, details.author.id);
     mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-      mongo.db("player").collection("score").find({}).toArray(function(err, result) {
-        var idarray = [];
-        var scorearray = [];
-        var tmp = "";
-        var n = 0;
-        var x = 0;
-        var ownid = 0;
-        while (n < result.length){
-          if (result[n]._id == details.author.id){
-            ownid = n;
-          }
-          idarray.push(result[n]._id);
-          scorearray.push(result[n].credit);
-          n = n+1;
-        }
-        while (x <= 9 && x <= idarray.length - 1) {
-          x = x + 1;
-          var found = 1;
-          var k = 0;
-          while (k <= idarray.length - 1) {
-            if (scorearray[ownid] < scorearray[k] || (n > k && scorearray[ownid] == scorearray[k])) {
-              found = found + 1;
-            }
-            k = k + 1;
-          }
-        }
-        details.channel.send("Rank: "+(found-1).toString()+"\nID: "+details.author.id+"\nMoney: $"+scorearray[ownid].toString());
-      });
+        details.channel.send("ID: "+details.author.id+"\nMoney: $"+(result.credit).toString());
     });
     details.react("💳");
   }else if (command.startsWith("lb")){
@@ -231,12 +226,14 @@ function check(details){
     mongo.db("player").collection("score").find({}).toArray(function(err, result) {
       var idarray = [];
       var scorearray = [];
+      var tagarray = [];
       var tmp = "";
       var n = 0;
       var x = 0;
       while (n < result.length){
         idarray.push(result[n]._id);
         scorearray.push(result[n].credit);
+        tagarray.push(result[n].tag);
         n = n+1;
       }
       while (x <= 9 && x <= idarray.length - 1) {
@@ -252,12 +249,12 @@ function check(details){
             k = k + 1;
           }
           if (found == x) {
-            tmp +='\n#' +found.toString() +' | ' +idarray[n] +' ($' +scorearray[n]+')';
+            tmp +='\n#' +found.toString() +' | ' +tagarray[n] +' ($' +scorearray[n]+')';
           }
           n = n + 1;
         }
       }
-      details.channel.send("__Top 10 Astronomer__"+tmp);
+      details.channel.send("__Top 10 Accounts__"+tmp);
     });
     details.react("📊");
   }else if (command.toLowerCase().startsWith("scan")){
@@ -268,15 +265,15 @@ function check(details){
     if (outcome != 1){
       details.channel.send("You have scanned the surface of "+planets[planetid]+" and discovered organic matter! Awesome! (+$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
+            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
       })
     }else{
       details.channel.send("You have scanned the surface of "+planets[planetid]+" and found nothing! (-$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
             if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
             }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
             }
       })
     }
@@ -289,15 +286,15 @@ function check(details){
     if (outcome != 1){
       details.channel.send("You have launched a "+orbit[orbitid]+" and it entered into space! Great Job! (+$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
+            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
       })
     }else{
       details.channel.send("You have launched a "+orbit[orbitid]+" and it crashed! (-$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
             if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
             }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
             }
       })
     }
@@ -311,15 +308,15 @@ function check(details){
     if (outcome != 1){
       details.channel.send("You hacked into "+device[deviceid]+"! Nice! (+$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
-            updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit+5})
+            updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit+5})
       })
     }else{
       details.channel.send("You have been caught trying to hack into "+prodevice[deviceid]+", what a noob! (-$5)")
       mongo.db("player").collection("score").findOne({ _id: details.author.id }).then(result => {
             if (result.credit-5 >= 0){
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: result.credit-5})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: result.credit-5})
             }else{
-              updateListingByName(mongo, details.author.id, { _id: details.author.id, credit: 0})
+              updateListingByName(mongo, details.author.id, { _id: details.author.id, tag: details.author.tag, credit: 0})
             }
       })
     }
@@ -680,7 +677,7 @@ function check(details){
 		},
 		{
 			name: 'Important Links',
-			value: '[Add Qubit into your server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)\n[Join Coder\'s System server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)',
+			value: '[Add Qubit into your server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)\n[Join Coder\'s System server](https://discord.gg/3chuca3EMh)',
 			inline: false,
 		}
   	],
