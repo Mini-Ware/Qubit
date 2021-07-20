@@ -33,6 +33,20 @@ client.on('message', details => {
     check(details);
   }
 });
+var fetch = require('node-fetch');
+fetch('https://discord.bots.gg/api/v1/bots/826031374766440459/stats', 
+        {
+            method: "POST",
+            headers: {
+                Authorization: process.env.DBOT,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                guildCount: client.guilds.size
+            })
+        }).then((res) => {
+            console.log(res);
+})
 function check(details){
   const command = details.content.substr(2);
   if (command.toLowerCase() == 'eval') {
