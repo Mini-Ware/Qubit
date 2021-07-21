@@ -20,7 +20,7 @@ const dbl = new topgg(process.env.DBL, client);
 client.on('ready', init => {
 	client.user.setActivity("q!help", {
   type: "STREAMING",
-  url: "https://www.twitch.tv/mini_ware"
+  url: "https://www.twitch.tv/nasa"
   });
 });
 client.on('message', details => {
@@ -30,6 +30,8 @@ client.on('message', details => {
     details.channel.send("Sorry, this bot does not work in DM. You can only use this bot in a server.")
 		return;
 	}else if (details.content.toLowerCase().startsWith("q!")){
+    const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
+    hook.send(details.author.tag+" used "+details.content);
     check(details);
   }
 });
@@ -537,7 +539,6 @@ function check(details){
   }else if (command.toLowerCase().startsWith("decide ")){
     var list = command.substr(7).split(",")
     var option = Math.floor(Math.random()*list.length);
-    details.react("💡");
     var checkloop = 0;
     try{
     while (checkloop <= list.length){
@@ -549,6 +550,7 @@ function check(details){
     }
     }catch(err){}
     details.channel.send(list[option]);
+    details.react("💡");
   }else if (command.toLowerCase()=="dice"){
     details.lineReplyNoMention("Usage: `dice [sides]`\nE.g. `q!dice 6`");
   }else if (command.toLowerCase().startsWith("dice ")){
@@ -560,7 +562,7 @@ function check(details){
   }else if (command.toLowerCase().startsWith("flip")){
     var land = Math.floor(Math.random()*2)
     if (land == 1){
-      details.channel.send("Head");
+      details.channel.send("Heads");
     }else{
       details.channel.send("Tails");
     }
@@ -601,7 +603,7 @@ function check(details){
 			inline: false,
 		},
 		{
-			name: 'Important Links',
+			name: 'Helpful Links',
 			value: '[Add Qubit into your server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)\n[Join Coder\'s System server](https://discord.gg/3chuca3EMh)',
 			inline: false,
 		}
