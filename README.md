@@ -6,5 +6,5 @@ Style: cursive, fraktur, invert, altcap</br>
 Media: spotify, youtube, giphy, photo</br>
 Network: ping, ip, whois, encode, decode</br></br>
 More features will be added soon!!</br></br>
- [Invite Link](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)</br>
+ [Invite Link](https://dsc.gg/qubit)</br>
  [Verified by Top.gg](https://top.gg/bot/826031374766440459)
