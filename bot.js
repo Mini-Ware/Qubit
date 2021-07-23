@@ -105,7 +105,7 @@ function check(msg){
     msg.channel.send(encodeURIComponent(mention));
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode")){
-    msg.lineReplyNoMention("Usage: `encode [b64/bin/hex] [string]`\nE.g. `q!encode b64 sample`");
+    msg.lineReplyNoMention("Usage: `encode [b64/bin/hex/url] [string]`\nE.g. `q!encode b64 sample`");
   }else if (command.toLowerCase().startsWith("decode b64")){
     const mention = command.substr(11);
     msg.channel.send(Buffer.from(mention, 'base64').toString('utf-8'));
@@ -609,7 +609,7 @@ function check(msg){
 			inline: false,
 		},
 		{
-			name: 'Invite Link',
+			name: 'Vanity URL',
 			value: 'https://dsc.gg/qubit',
 			inline: false,
 		}
