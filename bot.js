@@ -37,20 +37,6 @@ client.on('message', msg => {
     check(msg);
   }
 });
-var fetch = require('node-fetch');
-fetch('https://discord.bots.gg/api/v1/bots/826031374766440459/stats', 
-        {
-            method: "POST",
-            headers: {
-                Authorization: process.env.DBOT,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                guildCount: client.guilds.size
-            })
-        }).then((res) => {
-            console.log(res);
-})
 function check(msg){
   const command = msg.content.substr(2);
   if (command.toLowerCase() == 'eval') {
@@ -282,12 +268,7 @@ function check(msg){
                    "Yes",  
                    "My reply is no",
                    "My sources say no", 
-                   "Very doubtful", 
-                   "Reply hazy, try again", 
-                   "Ask again later", 
-                   "Better not tell you now",
-                   "Cannot predict now", 
-                   "Concentrate and ask again"];
+                   "Very doubtful"];
     const ask = Math.floor(Math.random()*outcome.length);
     msg.channel.send(outcome[ask]);
     msg.react("🔮");
@@ -337,7 +318,7 @@ function check(msg){
       var prev = "";
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && msg.content == filter.clean(msg.content)){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && (msg.content == filter.clean(msg.content) || msg.channel.nsfw == true)){
             list.push(parse[0]);
           }
           prev = parse[0]
@@ -394,7 +375,7 @@ function check(msg){
       var prev = "";
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && msg.content == filter.clean(msg.content)){
+          if (prev != parse[0] && parse[0].search("google")==-1 && (msg.content == filter.clean(msg.content) || msg.channel.nsfw == true)){
             list.push(parse[0]);
           }
           prev = parse[0]
@@ -451,7 +432,7 @@ function check(msg){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("southparkgifs")==-1 && msg.content == filter.clean(msg.content)){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("southparkgifs")==-1 && (msg.content == filter.clean(msg.content) || msg.channel.nsfw == true)){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               var tag = parse[0].split("/").reverse()
@@ -512,7 +493,7 @@ function check(msg){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && msg.content == filter.clean(msg.content)){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && (msg.content == filter.clean(msg.content) || msg.channel.nsfw == true)){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               locate[0] = locate[0].replace("/", "")
@@ -596,7 +577,7 @@ function check(msg){
     msg.channel.send({ embed: {
       color: '#221C35',
       title: "Qubit",
-      description: "A simple discord utility bot",
+      description: "A simple yet powerful utility bot",
       thumbnail: {
 		    url: 'https://cdn.discordapp.com/avatars/826031374766440459/37a324d853cade9ee8fdd5b2b8e40ce7.webp?size=1024',
 	    },
@@ -604,7 +585,7 @@ function check(msg){
       fields: [
 		{
 			name: '[*️⃣] Random',
-			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
+			value: '`decide`, `dice`, `flip`, `8ball`, `quote`',
       inline: true,
 		},
     {
@@ -628,8 +609,8 @@ function check(msg){
 			inline: false,
 		},
 		{
-			name: 'Helpful Links',
-			value: '[Add Qubit into your server](https://discord.com/oauth2/authorize?client_id=826031374766440459&scope=bot&permissions=19520)\n[Join Coder\'s System server](https://discord.gg/3chuca3EMh)',
+			name: 'Invite Link',
+			value: 'https://dsc.gg/qubit',
 			inline: false,
 		}
   	],
