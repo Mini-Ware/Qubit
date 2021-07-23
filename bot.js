@@ -4,6 +4,8 @@ const topgg = require("dblapi.js");
 const Discord = require('discord.js');
 require('discord-reply');
 const all = require("everyday-fun");
+const Filter = require('bad-words');
+const filter = new Filter();
 var os = require('os');
 const fs = require('fs');
 var collection = {};
@@ -318,7 +320,7 @@ function check(msg){
     msg.channel.send(quotemsg["quote"]+" -"+quotemsg["author"]);
     msg.react("☀️");
   }else if (command.toLowerCase()=="spotify"){
-    msg.lineReplyNoMention("Usage: `spotify [playlist]`\nE.g. `q!spotify edm`");
+    msg.lineReplyNoMention("Usage: `spotify [query]`\nE.g. `q!spotify edm`");
   }else if (command.toLowerCase().startsWith("spotify ")){
     msg.react("🎧");
     msg.channel.send("Fetching relevant playlists...").then(newmsg => {
@@ -335,7 +337,7 @@ function check(msg){
       var prev = "";
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && msg.content == filter.clean(msg.content)){
             list.push(parse[0]);
           }
           prev = parse[0]
@@ -375,7 +377,7 @@ function check(msg){
     });
     });
   }else if (command.toLowerCase()=="youtube"){
-    msg.lineReplyNoMention("Usage: `youtube [video]`\nE.g. `q!youtube rover landing`");
+    msg.lineReplyNoMention("Usage: `youtube [query]`\nE.g. `q!youtube rover landing`");
   }else if (command.toLowerCase().startsWith("youtube ")){
     msg.react("📺");
     msg.channel.send("Fetching relevant videos...").then(newmsg => {
@@ -392,7 +394,7 @@ function check(msg){
       var prev = "";
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && msg.content == filter.clean(msg.content)){
             list.push(parse[0]);
           }
           prev = parse[0]
@@ -432,7 +434,7 @@ function check(msg){
     });
     });
   }else if (command.toLowerCase()=="giphy"){
-    msg.lineReplyNoMention("Usage: `giphy [gif]`\nE.g. `q!giphy space`");
+    msg.lineReplyNoMention("Usage: `giphy [query]`\nE.g. `q!giphy space`");
   }else if (command.toLowerCase().startsWith("giphy ")){
     msg.react("🎞️");
     msg.channel.send("Looking for a GIF...").then(newmsg => {
@@ -449,7 +451,7 @@ function check(msg){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("edit")==-1 && parse[0].search("southparkgifs")==-1 && msg.content == filter.clean(msg.content)){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               var tag = parse[0].split("/").reverse()
@@ -492,12 +494,12 @@ function check(msg){
       }});
     });
     });
-  }else if (command.toLowerCase()=="pexels"){
-    msg.lineReplyNoMention("Usage: `pexels [image]`\nE.g. `q!pexels milky way`");
-  }else if (command.toLowerCase().startsWith("pexels ")){
+  }else if (command.toLowerCase()=="photo"){
+    msg.lineReplyNoMention("Usage: `photo [query]`\nE.g. `q!photo milky way`");
+  }else if (command.toLowerCase().startsWith("photo ")){
     msg.react("📸");
     msg.channel.send("Looking for an image...").then(newmsg => {
-    var mention = "site:pexels.com/photo "+command.substr("7").replace(":", " ");
+    var mention = "site:pexels.com/photo "+command.substr("6").replace(":", " ");
     var google = require('google');
     google.resultsPerPage = 30;
     var nextCounter = 0
@@ -510,7 +512,7 @@ function check(msg){
       var title = [];
       while (u < (parser.length-1)){
           parse = parser[u].split('&');
-          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1){
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && msg.content == filter.clean(msg.content)){
             if (parse[0].search("-")!=-1){
               const locate = parse[0].split("-").reverse();
               locate[0] = locate[0].replace("/", "")
@@ -617,7 +619,7 @@ function check(msg){
 		},
 		{
 			name: '[🎦] Media',
-			value: '`spotify`, `youtube`, `pexels`, `giphy`',
+			value: '`spotify`, `youtube`, `giphy`, `photo`',
 			inline: true,
 		},
 		{
