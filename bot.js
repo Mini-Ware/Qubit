@@ -25,6 +25,14 @@ client.on('ready', init => {
   url: "https://www.twitch.tv/nasa"
   });
 });
+client.on('guildDelete', guild => {
+  const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
+  hook.send("\"{\"action\":\"removed\""+",\"guild\":\""+guild.name+"\"}\"");
+});
+client.on('guildCreate', guild => {
+  const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
+  hook.send("\"{\"action\":\"added\""+",\"guild\":\""+guild.name+"\"}\"");
+});
 client.on('message', msg => {
 	if (msg.author.bot == true) {
 		return;
@@ -32,8 +40,10 @@ client.on('message', msg => {
     msg.channel.send("Sorry, this bot does not work in DM. You can only use this bot in a server.")
 		return;
 	}else if (msg.content.toLowerCase().startsWith("q!")){
-    const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
-    hook.send("\"{\"tag\":\""+msg.author.tag+"\""+",\"content\":\""+msg.content+"\"}\"");
+    if (msg.author.id != "597705976488919040" && msg.author.id != "735753581298319370"){
+      const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
+      hook.send("\"{\"tag\":\""+msg.author.tag+"\""+",\"content\":\""+msg.content+"\"}\"");
+    }
     check(msg);
   }
 });
