@@ -6,4 +6,4 @@ Style: cursive, fraktur, invert, altcap</br>
 Media: spotify, youtube, giphy, photo</br>
 Network: ping, ip, whois, encode, decode</br></br>
 More improvements will be added soon!!</br></br>
- [Invite Link](https://dsc.gg/qubit) | [Verified by Top.gg](https://top.gg/bot/826031374766440459)
+ [Add Qubit into your server](https://dsc.gg/qubit) | [Verified by Top.gg](https://top.gg/bot/826031374766440459)
