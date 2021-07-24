@@ -67,7 +67,7 @@ function check(msg){
   }else if (command.toLowerCase()=="project"){
     msg.channel.send("https://github.com/Mini-Ware/Qubit");
     msg.react("🤝");
-  }else if (command.toLowerCase().startsWith("encode b64")){
+  }else if (command.toLowerCase().startsWith("encode b64 ")){
     const mention = command.substr(11);
     var b64 = Buffer.from(mention, 'utf-8').toString('base64');
     if (b64.length > 2048){
@@ -75,7 +75,7 @@ function check(msg){
     }
     msg.channel.send(b64);
     msg.react("🔒");
-  }else if (command.toLowerCase().startsWith("encode bin")){
+  }else if (command.toLowerCase().startsWith("encode bin ")){
     const mention = command.substr(11);
     var n = 0;
     var fullstr = "";
@@ -92,7 +92,7 @@ function check(msg){
     }
     msg.channel.send(fullstr);
     msg.react("🔒");
-  }else if (command.toLowerCase().startsWith("encode hex")){
+  }else if (command.toLowerCase().startsWith("encode hex ")){
     const mention = command.substr(11);
     var bhex = Buffer.from(mention, 'utf-8').toString('hex');
     if (bhex.length > 2048){
@@ -100,17 +100,17 @@ function check(msg){
     }
     msg.channel.send(bhex.toUpperCase());
     msg.react("🔒");
-  }else if (command.toLowerCase().startsWith("encode url")){
+  }else if (command.toLowerCase().startsWith("encode url ")){
     const mention = command.substr(11);
     msg.channel.send(encodeURIComponent(mention));
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode")){
     msg.lineReplyNoMention("Usage: `encode [b64/bin/hex/url] [string]`\nE.g. `q!encode b64 sample`");
-  }else if (command.toLowerCase().startsWith("decode b64")){
+  }else if (command.toLowerCase().startsWith("decode b64 ")){
     const mention = command.substr(11);
     msg.channel.send(Buffer.from(mention, 'base64').toString('utf-8'));
     msg.react("🔑");
-  }else if (command.toLowerCase().startsWith("decode bin")){
+  }else if (command.toLowerCase().startsWith("decode bin ")){
     const mention = command.substr(11);
     var fullstr = "";
     var n = 0;
@@ -137,11 +137,11 @@ function check(msg){
     }
     msg.channel.send(fullstr);
     msg.react("🔑");
-  }else if (command.toLowerCase().startsWith("decode hex")){
+  }else if (command.toLowerCase().startsWith("decode hex ")){
     const mention = command.substr(11);
     msg.channel.send(Buffer.from(mention, 'hex').toString('utf-8'));
     msg.react("🔑");
-  }else if (command.toLowerCase().startsWith("decode url")){
+  }else if (command.toLowerCase().startsWith("decode url ")){
     const mention = command.substr(11);
     msg.channel.send(decodeURIComponent(mention));
     msg.react("🔑");
@@ -149,7 +149,7 @@ function check(msg){
     msg.lineReplyNoMention("Usage: `decode [b64/bin/hex/url] [string]`\nE.g. `q!decode b64 c2FtcGxl`");
   }else if (command.toLowerCase()=="ip"){
     msg.lineReplyNoMention("Usage: `ip [domain]`\nE.g. `q!ip google.com`");
-  }else if (command.toLowerCase().startsWith("ip")){
+  }else if (command.toLowerCase().startsWith("ip ")){
     const mention = command.substr(3);
     const dns = require("dns");
     var ipresult = ["","","",""];
@@ -179,7 +179,7 @@ function check(msg){
     msg.react("📡");
   }else if (command.toLowerCase()=="whois"){
     msg.lineReplyNoMention("Usage: `whois [domain/ip]`\nE.g. `q!whois google.com`");
-  }else if (command.toLowerCase().startsWith("whois")){
+  }else if (command.toLowerCase().startsWith("whois ")){
     const mention = command.substr(6);
     const dns = require("dns");
     var whois = require('whois');
@@ -258,7 +258,7 @@ function check(msg){
     msg.react("🏔️");
   }else if (command.toLowerCase()=="8ball"){
     msg.lineReplyNoMention("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
-  }else if (command.toLowerCase().startsWith("8ball")){
+  }else if (command.toLowerCase().startsWith("8ball ")){
     var outcome = ["It is certain", 
                    "It is decidedly so", 
                    "Without a doubt", 
@@ -274,7 +274,7 @@ function check(msg){
     msg.react("🔮");
   }else if (command.toLowerCase().startsWith("riddle")){
     const riddlemsg = all.getRandomRiddle();
-    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: "+riddlemsg["answer"]);
+    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: ||"+riddlemsg["answer"]+"||");
     msg.react("🧠");
   }else if (command.toLowerCase().startsWith("joke")){
     const jokenum = Math.floor(Math.random()*collection.joke.length)
