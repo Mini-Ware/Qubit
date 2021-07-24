@@ -160,7 +160,7 @@ function check(msg){
   }else if (command.toLowerCase()=="ip"){
     msg.lineReplyNoMention("Usage: `ip [domain]`\nE.g. `q!ip google.com`");
   }else if (command.toLowerCase().startsWith("ip ")){
-    const mention = command.substr(3);
+    const mention = command.substr(3).replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
     const dns = require("dns");
     var ipresult = ["","","",""];
     dns.resolve4(mention, { ttl: true }, (err, addresses) => {
@@ -190,14 +190,14 @@ function check(msg){
   }else if (command.toLowerCase()=="whois"){
     msg.lineReplyNoMention("Usage: `whois [domain/ip]`\nE.g. `q!whois google.com`");
   }else if (command.toLowerCase().startsWith("whois ")){
-    const mention = command.substr(6);
+    const mention = command.substr(6).replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
     const dns = require("dns");
     var whois = require('whois');
     whois.lookup(mention, (err, data) => {
       if (err){
         msg.channel.send("Sorry, no information could be retrieved");
       }else{
-        if (data.search("%") != -1 || (data.toLowerCase().search("no") != -1 && data.toLowerCase().search("match") != -1) || (data.toLowerCase().search("no") != -1 && data.toLowerCase().search("found") != -1)){
+        if (data.search("%") != -1 || (data.toLowerCase().search("no") != -1 && (data.toLowerCase().search("match") != -1 || data.toLowerCase().search("found") != -1 || data.toLowerCase().search("such domain") != -1)) || data.search("\\n") == -1){
           msg.channel.send("Sorry, no information could be retrieved");
           return;
         }else if (data.search(">") != -1){
@@ -284,7 +284,7 @@ function check(msg){
     msg.react("🔮");
   }else if (command.toLowerCase().startsWith("riddle")){
     const riddlemsg = all.getRandomRiddle();
-    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: ||"+riddlemsg["answer"]+"||");
+    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: "+riddlemsg["answer"]);
     msg.react("🧠");
   }else if (command.toLowerCase().startsWith("joke")){
     const jokenum = Math.floor(Math.random()*collection.joke.length)
@@ -595,7 +595,7 @@ function check(msg){
       fields: [
 		{
 			name: '[*️⃣] Random',
-			value: '`decide`, `dice`, `flip`, `8ball`, `quote`',
+			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
       inline: true,
 		},
     {
@@ -619,7 +619,7 @@ function check(msg){
 			inline: false,
 		},
 		{
-			name: 'Vanity URL',
+			name: 'Invite Link',
 			value: 'https://dsc.gg/qubit',
 			inline: false,
 		}
