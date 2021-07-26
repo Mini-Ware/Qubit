@@ -37,7 +37,6 @@ client.on('message', msg => {
 	if (msg.author.bot == true) {
 		return;
 	} else if (msg.channel.type === 'dm') {
-    msg.channel.send("Sorry, this bot does not work in DM. You can only use this bot in a server.")
 		return;
 	}else if (msg.content.toLowerCase().startsWith("q!")){
     if (msg.author.id != "597705976488919040" && msg.author.id != "735753581298319370"){
