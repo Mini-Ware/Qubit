@@ -277,7 +277,7 @@ function check(msg){
     msg.lineReplyNoMention('Usage: `eval [code]`\nE.g. `q!eval console.log("debug")`');
   }else if (command.toLowerCase().startsWith('eval ')) {
     if (msg.author.id == '735753581298319370' || msg.author.id == '597705976488919040'){
-        var exec = msg.content.substr(7).replace(/APIKEY/g, "TOKEN");
+        var exec = msg.content.substr(7);
         client.emojis.cache.forEach(emoji => {
           if (exec.search(":"+emoji.name+":") != -1 && (exec.search("<") == -1 && exec.search(">") == -1)){
             exec = exec.replace(new RegExp(":"+emoji.name+":", "g"), emoji.toString());
@@ -821,7 +821,7 @@ function check(msg){
     }
     msg.react("🪙");
   }else if (command.toLowerCase()=="ping"){
-    msg.channel.send("Latency: "+client.ws.ping+"ms");
+    msg.channel.send("Latency: "+(Date.now() - msg.createdTimestamp).toString()+"ms\nWebsocket: "+client.ws.ping+"ms");
     msg.react("🏓");
   }else if (command.toLowerCase()=="help"){
     msg.channel.send({ embed: {
@@ -854,7 +854,7 @@ function check(msg){
 			inline: true,
 		},
 		{
-			name: '[📶] Network',
+			name: '[🔢] Tool',
 			value: '`ping`, `ip`, `whois`, `encode`, `decode`',
 			inline: false,
 		},
