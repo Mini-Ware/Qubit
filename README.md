@@ -4,6 +4,7 @@ Random: decide, dice, 8ball, flip, quote</br>
 Fun: riddle, joke, roast, topic, pickup</br>
 Style: cursive, fraktur, invert, altcap</br>
 Media: spotify, youtube, giphy, photo</br>
+Activity: yttogether, chess, poker, fishing</br>
 Tool: ping, ip, whois, encode, decode</br></br>
 More improvements will be added frequently!!</br></br>
  [Add Qubit into your server](https://dsc.gg/qubit) | [Verified by Top.gg](https://top.gg/bot/826031374766440459)
