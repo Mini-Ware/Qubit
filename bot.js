@@ -866,20 +866,20 @@ function check(msg){
           return;
         }
         msg.react("🃏");
-    }else if(command.toLowerCase().startsWith("fishing")){
+    }else if(command.toLowerCase().startsWith("betrayal")){
         if(msg.member.voice.channel) {
-            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'fishing').then(async invite => {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'betrayal').then(async invite => {
               if(invite.code){
-                msg.channel.send(`Click on the link to start playing a fishing game\n${invite.code}`)
+                msg.channel.send(`Click on the link to start playing betrayal\n${invite.code}`)
               }else{
-                msg.reply("Sorry, the fishing activity has trouble starting")
+                msg.reply("Sorry, the betrayal activity has trouble starting")
               }
 	    });
         }else{
           msg.channel.send("Sorry, you need to be in a voice channel");
           return;
         }
-        msg.react("🎣");
+        msg.react("🕵️");
     }else if (command.toLowerCase()=="help"){
     msg.channel.send({ embed: {
       color: '#221C35',
@@ -912,7 +912,7 @@ function check(msg){
 		},
 		{
 			name: '[📶] Activity',
-			value: '`yttogether`, `chess`, `poker`, `fishing`',
+			value: '`yttogether`, `chess`, `poker`, `betrayal`',
 			inline: false,
 		},
 		{
