@@ -828,9 +828,9 @@ function check(msg){
         if(msg.member.voice.channel) {
             client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'youtube').then(async invite => {
               if(invite.code){
-                msg.channel.send(`Click on the link to start YouTube Together\n${invite.code}`)
+                msg.channel.send(`Click on the link to start watching YouTube Together\n${invite.code}`)
               }else{
-                msg.reply("Sorry, YouTube Together has trouble starting")
+                msg.reply("Sorry, the YouTube Together activity has trouble starting")
               }
 	    });
         }else{
@@ -842,9 +842,9 @@ function check(msg){
         if(msg.member.voice.channel) {
             client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'chess').then(async invite => {
               if(invite.code){
-                msg.channel.send(`Click on the link to start Chess\n${invite.code}`)
+                msg.channel.send(`Click on the link to start playing a game of chess\n${invite.code}`)
               }else{
-                msg.reply("Sorry, Chess has trouble starting")
+                msg.reply("Sorry, the chess activity has trouble starting")
               }
 	    });
         }else{
@@ -856,9 +856,9 @@ function check(msg){
         if(msg.member.voice.channel) {
             client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'poker').then(async invite => {
               if(invite.code){
-                msg.channel.send(`Click on the link to start Poker\n${invite.code}`)
+                msg.channel.send(`Click on the link to start playing a game of poker\n${invite.code}`)
               }else{
-                msg.reply("Sorry, Poker has trouble starting")
+                msg.reply("Sorry, the poker activity has trouble starting")
               }
 	    });
         }else{
@@ -870,9 +870,9 @@ function check(msg){
         if(msg.member.voice.channel) {
             client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'fishing').then(async invite => {
               if(invite.code){
-                msg.channel.send(`Click on the link to start Fishing\n${invite.code}`)
+                msg.channel.send(`Click on the link to start playing a fishing game\n${invite.code}`)
               }else{
-                msg.reply("Sorry, Fishing has trouble starting")
+                msg.reply("Sorry, the fishing activity has trouble starting")
               }
 	    });
         }else{
@@ -892,12 +892,12 @@ function check(msg){
       fields: [
 		{
 			name: '[*️⃣] Random',
-			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
+			value: '`decide`, `dice`, `8ball`, `flip`, `topic`',
       inline: false,
 		},
     {
 			name: '[#️⃣] Fun',
-			value: '`riddle`, `joke`, `roast`, `topic`, `pickup`',
+			value: '`riddle`, `joke`, `roast`, `quote`, `pickup`',
 			inline: false,
 		},
 		{
