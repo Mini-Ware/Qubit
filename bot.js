@@ -1,4 +1,3 @@
-//died
 const dotenv = require('dotenv');
 dotenv.config();
 const topgg = require("dblapi.js");
@@ -244,6 +243,8 @@ try{
 } catch (err) {
   if (err){}
 }
+const { DiscordTogether } = require('discord-together');
+client.discordTogether = new DiscordTogether(client);
 client.on('ready', init => {
 	client.user.setActivity("q!help", {
   type: "STREAMING",
@@ -508,7 +509,7 @@ function check(msg){
     msg.react("🔮");
   }else if (command.toLowerCase().startsWith("riddle")){
     const riddlemsg = all.getRandomRiddle();
-    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: "+riddlemsg["answer"]);
+    msg.channel.send("Q: "+riddlemsg["riddle"]+"\nA: ||"+riddlemsg["answer"]+"||");
     msg.react("🧠");
   }else if (command.toLowerCase().startsWith("joke")){
     const jokenum = Math.floor(Math.random()*collection.joke.length)
@@ -823,7 +824,63 @@ function check(msg){
   }else if (command.toLowerCase()=="ping"){
     msg.channel.send("Latency: "+(Date.now() - msg.createdTimestamp).toString()+"ms\nWebsocket: "+client.ws.ping+"ms");
     msg.react("🏓");
-  }else if (command.toLowerCase()=="help"){
+  }else if(command.toLowerCase().startsWith("yttogether")){
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'youtube').then(async invite => {
+              if(invite.code){
+                msg.channel.send(`Click on the link to start YouTube Together\n${invite.code}`)
+              }else{
+                msg.reply("Sorry, YouTube Together has trouble starting")
+              }
+	    });
+        }else{
+          msg.channel.send("Sorry, you need to be in a voice channel");
+          return;
+        }
+        msg.react("🛋️");
+    }else if(command.toLowerCase().startsWith("chess")){
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'chess').then(async invite => {
+              if(invite.code){
+                msg.channel.send(`Click on the link to start Chess\n${invite.code}`)
+              }else{
+                msg.reply("Sorry, Chess has trouble starting")
+              }
+	    });
+        }else{
+          msg.channel.send("Sorry, you need to be in a voice channel");
+          return;
+        }
+        msg.react("♟️");
+    }else if(command.toLowerCase().startsWith("poker")){
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'poker').then(async invite => {
+              if(invite.code){
+                msg.channel.send(`Click on the link to start Poker\n${invite.code}`)
+              }else{
+                msg.reply("Sorry, Poker has trouble starting")
+              }
+	    });
+        }else{
+          msg.channel.send("Sorry, you need to be in a voice channel");
+          return;
+        }
+        msg.react("🃏");
+    }else if(command.toLowerCase().startsWith("fishing")){
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'fishing').then(async invite => {
+              if(invite.code){
+                msg.channel.send(`Click on the link to start Fishing\n${invite.code}`)
+              }else{
+                msg.reply("Sorry, Fishing has trouble starting")
+              }
+	    });
+        }else{
+          msg.channel.send("Sorry, you need to be in a voice channel");
+          return;
+        }
+        msg.react("🎣");
+    }else if (command.toLowerCase()=="help"){
     msg.channel.send({ embed: {
       color: '#221C35',
       title: "Qubit",
@@ -836,7 +893,7 @@ function check(msg){
 		{
 			name: '[*️⃣] Random',
 			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
-      inline: true,
+      inline: false,
 		},
     {
 			name: '[#️⃣] Fun',
@@ -851,7 +908,12 @@ function check(msg){
 		{
 			name: '[🎦] Media',
 			value: '`spotify`, `youtube`, `giphy`, `photo`',
-			inline: true,
+			inline: false,
+		},
+		{
+			name: '[📶] Activity',
+			value: '`yttogether`, `chess`, `poker`, `fishing`',
+			inline: false,
 		},
 		{
 			name: '[🔢] Tool',
