@@ -497,11 +497,8 @@ function check(msg){
         const filter = (react, user) => {
           return (react.emoji.name === ltmp || react.emoji.name === rtmp) && user.id === msg.author.id;
         };
-        const stamp = newmsg.createReactionCollector(filter, { time: 30000 });
+        const stamp = newmsg.createReactionCollector(filter, { time: 300000 });
         stamp.on('collect', (react, user) => {
-          newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
-        })
-        stamp.on('end', (react, user) => {
           newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
         })
       })
