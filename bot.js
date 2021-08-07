@@ -487,11 +487,12 @@ function check(msg){
     msg.channel.send(pickupmsg);
     msg.react("💖");
   }else if (command.toLowerCase().startsWith("wyr")){
-    wyr().then((response) => {
-      msg.channel.send("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)").then(newmsg => {
-        newmsg.react("🔵");
-        newmsg.react("🔴");
+    msg.channel.send("Would you rather...").then(newmsg => {
+      wyr().then((response) => {
+        newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
       })
+      newmsg.react("🔵");
+      newmsg.react("🔴");
     })
     msg.react("💭");
   }else if (command.toLowerCase().startsWith("roast")){
