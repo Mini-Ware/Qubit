@@ -723,20 +723,23 @@ function check(msg){
         return;
       }
     }
-    if (command.search(":") != -1 && command.search(">") != -1){
+    if (command.search(":") != -1 && command.search(">") != -1 && command.search("<") != -1){
       var emoji = command.split(":");
       var eid = emoji[2].split(">");
-      newmsg.delete()
-      if (client.emojis.cache.get(eid[0])){
-        newmsg.channel.send({ embed: {
-          title: "Emoji",
-          color: '#221C35',
-          image: {
-            url: client.emojis.cache.get(eid[0]).url
-          }
-        }});
-        return;
+      var animated = emoji[0].split("<").reverse().join();
+      var format = ".png";
+      if (animated.startsWith("a")){
+        format = ".gif";
       }
+      newmsg.delete()
+      newmsg.channel.send({ embed: {
+        title: "Emoji",
+        color: '#221C35',
+        image: {
+          url: "https://cdn.discordapp.com/emojis/"+eid[0]+format
+          }
+      }});
+      return;
     }
     var mention = "site:pexels.com/photo "+command.substr("6").replace(":", " ");
     var google = require('google');
