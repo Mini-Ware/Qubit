@@ -487,12 +487,21 @@ function check(msg){
     msg.channel.send(pickupmsg);
     msg.react("💖");
   }else if (command.toLowerCase().startsWith("wyr")){
-    msg.channel.send("Would you rather...").then(newmsg => {
+    msg.channel.send("Finding a new question...").then(newmsg => {
       wyr().then((response) => {
-        newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
+        newmsg.edit("Blue: "+response.blue.question+"\nRed: "+response.red.question)
+        newmsg.react("🔵");
+        newmsg.react("🔴");
+        const rtmp = '🔵';
+        const ltmp = '🔴';
+        const filter = (react, user) => {
+          return (react.emoji.name === ltmp || react.emoji.name === rtmp) && user.id === msg.author.id;
+        };
+        const stamp = newmsg.createReactionCollector(filter, { time: 300000 });
+        stamp.on('collect', (react, user) => {
+          newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
+        })
       })
-      newmsg.react("🔵");
-      newmsg.react("🔴");
     })
     msg.react("💭");
   }else if (command.toLowerCase().startsWith("roast")){
@@ -857,12 +866,12 @@ function check(msg){
       fields: [
 		{
 			name: '[*️⃣] Random',
-			value: '`decide`, `dice`, `8ball`, `flip`, `wyr`',
+			value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
       inline: false,
 		},
     {
 			name: '[#️⃣] Fun',
-			value: '`riddle`, `joke`, `roast`, `quote`, `pickup`',
+			value: '`wyr`, `riddle`, `joke`, `roast`, `pickup`',
 			inline: false,
 		},
 		{
