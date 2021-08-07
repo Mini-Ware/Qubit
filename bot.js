@@ -712,16 +712,18 @@ function check(msg){
       var member = command.split("@!");
       var uid = member[1].split(">");
       newmsg.delete()
+      var loc = ""
       if (client.users.cache.get(uid[0])){
-        newmsg.channel.send({ embed: {
-          title: "Avatar",
-          color: '#221C35',
-          image: {
-            url: client.users.cache.get(uid[0]).displayAvatarURL()
-          }
-        }});
-        return;
+        var loc = client.users.cache.get(uid[0]).displayAvatarURL()
       }
+      newmsg.channel.send({ embed: {
+        title: "Avatar",
+        color: '#221C35',
+        image: {
+          url: loc
+        }
+      }});
+      return;
     }
     if (command.search(":") != -1 && command.search(">") != -1 && command.search("<") != -1){
       var emoji = command.split(":");
