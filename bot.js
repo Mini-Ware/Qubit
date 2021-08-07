@@ -698,7 +698,9 @@ function check(msg){
     });
     });
     } catch (err) {
-      if (err){}
+      if (err){
+        msg.channel.send("Sorry, no GIFs could be found")
+      }
     }
   }else if (command.toLowerCase()=="photo"){
     msg.lineReplyNoMention("Usage: `photo [query/mention/emote]`\nE.g. `q!photo milky way`");
@@ -794,7 +796,9 @@ function check(msg){
     });
     });
     } catch (err) {
-      if (err){}
+      if (err){
+        msg.channel.send("Sorry, no images could be found")
+      }
     }
   }else if (command.toLowerCase()=="decide"){
     msg.lineReplyNoMention("Usage: `decide [options]`\nE.g. `q!decide go jogging, watch movie, play games`");
