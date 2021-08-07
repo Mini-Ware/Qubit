@@ -701,11 +701,41 @@ function check(msg){
       if (err){}
     }
   }else if (command.toLowerCase()=="photo"){
-    msg.lineReplyNoMention("Usage: `photo [query]`\nE.g. `q!photo milky way`");
+    msg.lineReplyNoMention("Usage: `photo [query/mention/emote]`\nE.g. `q!photo milky way`");
   }else if (command.toLowerCase().startsWith("photo ")){
     try{
     msg.react("📸");
     msg.channel.send("Looking for an image...").then(newmsg => {
+    if (command.search("@!") != -1 && command.search(">") != -1){
+      var member = command.split("@!");
+      var uid = member[1].split(">");
+      newmsg.delete()
+      if (client.users.cache.get(uid[0])){
+        newmsg.channel.send({ embed: {
+          title: "Avatar",
+          color: '#221C35',
+          image: {
+            url: client.users.cache.get(uid[0]).displayAvatarURL()
+          }
+        }});
+        return;
+      }
+    }
+    if (command.search(":") != -1 && command.search(">") != -1){
+      var emoji = command.split(":");
+      var eid = emoji[2].split(">");
+      newmsg.delete()
+      if (client.emojis.cache.get(eid[0])){
+        newmsg.channel.send({ embed: {
+          title: "Emoji",
+          color: '#221C35',
+          image: {
+            url: client.emojis.cache.get(eid[0]).url
+          }
+        }});
+        return;
+      }
+    }
     var mention = "site:pexels.com/photo "+command.substr("6").replace(":", " ");
     var google = require('google');
     google.resultsPerPage = 30;
