@@ -416,6 +416,7 @@ function check(msg){
   }else if (command.toLowerCase()=="whois"){
     msg.lineReplyNoMention("Usage: `whois [domain/ip]`\nE.g. `q!whois google.com`");
   }else if (command.toLowerCase().startsWith("whois ")){
+    msg.react("🌐");
     const mention = command.substr(6).replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
     const dns = require("dns");
     var whois = require('whois');
@@ -455,7 +456,6 @@ function check(msg){
         }});
       }
     });
-    msg.react("🌐");
   }else if (command.toLowerCase()=="8ball"){
     msg.lineReplyNoMention("Usage: `8ball [question]`\nE.g. `q!8ball will it rain tomorrow?`");
   }else if (command.toLowerCase().startsWith("8ball ")){
@@ -487,7 +487,7 @@ function check(msg){
     msg.channel.send(pickupmsg);
     msg.react("💖");
   }else if (command.toLowerCase().startsWith("wyr")){
-    msg.channel.send("Finding a new question...").then(newmsg => {
+    msg.channel.send("Would you rather...").then(newmsg => {
       wyr().then((response) => {
         newmsg.edit("Blue: "+response.blue.question+"\nRed: "+response.red.question)
         newmsg.react("🔵");
@@ -708,8 +708,8 @@ function check(msg){
     try{
     msg.react("📸");
     msg.channel.send("Looking for an image...").then(newmsg => {
-    if (command.search("@!") != -1 && command.search(">") != -1){
-      var member = command.split("@!");
+    if (command.search("@") != -1 && command.search(">") != -1){
+      var member = command.replace(/!/g, "").split("@");
       var uid = member[1].split(">");
       newmsg.delete()
       var loc = ""
