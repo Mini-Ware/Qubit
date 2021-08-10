@@ -697,13 +697,13 @@ function check(msg){
     } catch (err) {
       if (err){}
     }
-  }else if (command.toLowerCase()=="giphy"){
-    msg.lineReplyNoMention("Usage: `giphy [query]`\nE.g. `q!giphy space`");
-  }else if (command.toLowerCase().startsWith("giphy ")){
+  }else if (command.toLowerCase()=="gif"){
+    msg.lineReplyNoMention("Usage: `gif [query]`\nE.g. `q!gif space`");
+  }else if (command.toLowerCase().startsWith("gif ")){
     try{
     msg.react("🎞️");
     msg.channel.send("Looking for a GIF...").then(newmsg => {
-    var mention = "site:giphy.com/gifs "+command.substr("6").replace(":", " ");
+    var mention = "site:giphy.com/gifs "+command.substr("4").replace(":", " ");
     var google = require('google');
     google.resultsPerPage = 30;
     var nextCounter = 0
@@ -942,7 +942,7 @@ function check(msg){
           msg.channel.send("Sorry, you are required to join a voice channel");
         }
         msg.react("🃏");
-    }else if(command.toLowerCase().startsWith("betrayal")){
+    }else if(command.toLowerCase().startsWith("betray")){
         if(msg.member.voice.channel) {
             client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'betrayal').then(async invite => {
               if(invite.code){
@@ -990,12 +990,12 @@ function check(msg){
 		},
 		{
 			name: '[🎦] Media',
-			value: '`spotify`, `youtube`, `wiki`, `giphy`, `photo`',
+			value: '`spotify`, `youtube`, `wiki`, `gif`, `photo`',
 			inline: false,
 		},
 		{
 			name: '[⏯️] Activity',
-			value: '`ytt`, `chess`, `poker`, `betrayal`, `fishing`',
+			value: '`ytt`, `chess`, `poker`, `betray`, `fishing`',
 			inline: false,
 		},
 		{
