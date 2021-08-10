@@ -394,7 +394,8 @@ function check(msg){
         msg.channel.send("Sorry, network is unreachable");
         return;
       }else{
-        msg.channel.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(newmsg => {
+        const chat = client.channels.cache.get("847029608662040626");
+        chat.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(newmsg => {
           dns.resolve6(mention, { ttl: true }, (err, addresses) => {
             if (err){
               msg.channel.send({ embed: {
@@ -499,7 +500,7 @@ function check(msg){
         };
         const stamp = newmsg.createReactionCollector(filter, { time: 300000 });
         stamp.on('collect', (react, user) => {
-          newmsg.edit("Blue: "+response.blue.question+" ("+Math.floor(Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)\nRed: "+response.red.question+" ("+Math.floor(Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100).toString()+"%)")
+          newmsg.edit("Blue: "+response.blue.question+" ("+(Math.floor((Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)\nRed: "+response.red.question+" ("+(Math.ceil((Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)")
         })
       })
     })
@@ -635,6 +636,67 @@ function check(msg){
     } catch (err) {
       if (err){}
     }
+  }else if (command.toLowerCase()=="wiki"){
+    msg.lineReplyNoMention("Usage: `wiki [query]`\nE.g. `q!wiki solar system`");
+  }else if (command.toLowerCase().startsWith("wiki ")){
+    try{
+    msg.react("📄");
+    msg.channel.send("Fetching relevant articles...").then(newmsg => {
+    var mention = "site:en.wikipedia.org/wiki/ "+command.substr("5").replace(":", " ");
+    var google = require('google');
+    google.resultsPerPage = 20;
+    var nextCounter = 0
+    google(mention, (err, res) => {
+      const parser = res.body.split('<a href="/url?q=');
+      var parse = "";
+      var list = [];
+      var u = 1;
+      var now = 0;
+      var prev = "";
+      while (u < (parser.length-1)){
+          parse = parser[u].split('&');
+          if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && (msg.content == filter.clean(msg.content) || msg.channel.nsfw == true)){
+            list.push(parse[0]);
+          }
+          prev = parse[0]
+          u = u+1;
+      }
+      if (list.length == 0){
+          result = "[Article 0/0]\nhttps://www.wikipedia.org/";
+      }else{
+        result="[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+list[0];
+      }
+      newmsg.edit(result.replace("%3F", "?").replace("%3D", "=")).then(newmsg => {
+        newmsg.react("🔼");
+        newmsg.react("🔽");
+        const rtmp = '🔼';
+        const ltmp = '🔽';
+        const filter = (react, user) => {
+					return (react.emoji.name === ltmp || react.emoji.name === rtmp) && user.id === msg.author.id;
+				};
+        const stamp = newmsg.createReactionCollector(filter, { time: 300000 });
+        stamp.on('collect', (react, user) => {
+          if (react.emoji.name === ltmp && user.id === msg.author.id) {
+            if (now+1 < list.length){
+              now = now+1;
+              result=list[now];
+              newmsg.edit("[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="));
+            }
+          }
+          if (react.emoji.name === rtmp && user.id === msg.author.id) {
+            if (now+1 > 1){
+              now = now-1;
+              result=list[now];
+              newmsg.edit("[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="));
+            }
+          }
+        });
+      });
+    });
+    });
+    } catch (err) {
+      if (err){}
+    }
   }else if (command.toLowerCase()=="giphy"){
     msg.lineReplyNoMention("Usage: `giphy [query]`\nE.g. `q!giphy space`");
   }else if (command.toLowerCase().startsWith("giphy ")){
@@ -714,7 +776,7 @@ function check(msg){
       newmsg.delete()
       var loc = ""
       if (client.users.cache.get(uid[0])){
-        var loc = client.users.cache.get(uid[0]).displayAvatarURL()
+        var loc = client.users.cache.get(uid[0]).displayAvatarURL({dynamic : true})
       }
       newmsg.channel.send({ embed: {
         title: "Avatar",
@@ -893,6 +955,19 @@ function check(msg){
           msg.channel.send("Sorry, you are required to join a voice channel");
         }
         msg.react("🕵️");
+    }else if(command.toLowerCase().startsWith("fishing")){
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channelID, 'fishing').then(async invite => {
+              if(invite.code){
+                msg.channel.send(`Click on the link below to start playing fishing\n${invite.code}`)
+              }else{
+                msg.reply("Sorry, the fishing activity has trouble starting")
+              }
+	    });
+        }else{
+          msg.channel.send("Sorry, you are required to join a voice channel");
+        }
+        msg.react("🎣");
     }else if (command.toLowerCase()=="help"){
     msg.channel.send({ embed: {
       color: '#221C35',
@@ -915,12 +990,12 @@ function check(msg){
 		},
 		{
 			name: '[🎦] Media',
-			value: '`spotify`, `youtube`, `giphy`, `photo`',
+			value: '`spotify`, `youtube`, `wiki`, `giphy`, `photo`',
 			inline: false,
 		},
 		{
 			name: '[⏯️] Activity',
-			value: '`ytt`, `chess`, `poker`, `betrayal`',
+			value: '`ytt`, `chess`, `poker`, `betrayal`, `fishing`',
 			inline: false,
 		},
 		{
