@@ -306,10 +306,11 @@ function check(msg){
   }else if (command.toLowerCase().startsWith("encode b64 ")){
     const mention = command.substr(11);
     var b64 = Buffer.from(mention, 'utf-8').toString('base64');
-    if (b64.length > 2048){
-        b64 = b64.substring(0,2039)+"..."
+    if (b64.length > 2000){
+      msg.channel.send("Sorry, the output is too large to display")
+    }else{
+      msg.channel.send(b64);
     }
-    msg.channel.send(b64);
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode bin ")){
     const mention = command.substr(11);
@@ -323,22 +324,28 @@ function check(msg){
         fullstr += sus;
         n = n+1;
     }
-    if (fullstr.length > 2048){
-        fullstr = fullstr.substring(0,2039)+"..."
+    if (fullstr.length > 2000){
+      msg.channel.send("Sorry, the output is too large to display")
+    }else{
+      msg.channel.send(fullstr);
     }
-    msg.channel.send(fullstr);
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode hex ")){
     const mention = command.substr(11);
     var bhex = Buffer.from(mention, 'utf-8').toString('hex');
-    if (bhex.length > 2048){
-        bhex = bhex.substring(0,2039)+"..."
+    if (bhex.length > 2000){
+      msg.channel.send("Sorry, the output is too large to display")
+    }else{
+      msg.channel.send(bhex.toUpperCase());
     }
-    msg.channel.send(bhex.toUpperCase());
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode url ")){
     const mention = command.substr(11);
-    msg.channel.send(encodeURIComponent(mention));
+    if (encodeURIComponent(mention).length > 2000){
+      msg.channel.send("Sorry, the output is too large to display")
+    }else{
+      msg.channel.send(encodeURIComponent(mention));
+    }
     msg.react("🔒");
   }else if (command.toLowerCase().startsWith("encode")){
     msg.lineReplyNoMention("Usage: `encode [b64/bin/hex/url] [string]`\nE.g. `q!encode b64 sample`");
@@ -347,7 +354,7 @@ function check(msg){
     msg.channel.send(Buffer.from(mention, 'base64').toString('utf-8'));
     msg.react("🔑");
   }else if (command.toLowerCase().startsWith("decode bin ")){
-    const mention = command.substr(11);
+    const mention = command.substr(11).replace(/ /g, "");
     var fullstr = "";
     var n = 0;
     var midstr = "";
@@ -375,7 +382,7 @@ function check(msg){
     msg.react("🔑");
   }else if (command.toLowerCase().startsWith("decode hex ")){
     const mention = command.substr(11);
-    msg.channel.send(Buffer.from(mention, 'hex').toString('utf-8'));
+    msg.channel.send(Buffer.from(mention.replace(/ /g, ""), 'hex').toString('utf-8'));
     msg.react("🔑");
   }else if (command.toLowerCase().startsWith("decode url ")){
     const mention = command.substr(11);
@@ -708,6 +715,7 @@ function check(msg){
     google.resultsPerPage = 30;
     var nextCounter = 0
     google(mention, (err, res) => {
+      try{
       const parser = res.body.split('<a href="/url?q=');
       var parse = "";
       var list = [];
@@ -757,6 +765,7 @@ function check(msg){
           url: result.replace("%3F", "?").replace("%3D", "=")
         }
       }});
+      } catch (err) {}
     });
     });
     } catch (err) {
@@ -810,6 +819,7 @@ function check(msg){
     google.resultsPerPage = 30;
     var nextCounter = 0
     google(mention, (err, res) => {
+      try{
       const parser = res.body.split('<a href="/url?q=');
       var parse = "";
       var list = [];
@@ -860,6 +870,7 @@ function check(msg){
           url: result.replace("%3F", "?").replace("%3D", "=")
         }
       }});
+      } catch (err) {}
     });
     });
     } catch (err) {
