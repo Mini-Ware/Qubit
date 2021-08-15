@@ -1,2 +1,2 @@
 require('./bot.js');
-require('./server.js');
+//host a website
