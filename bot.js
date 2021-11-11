@@ -8,6 +8,7 @@ const wyr = require('wyr');
 const Filter = require('bad-words');
 const request = require("request");
 const cheerio = require('cheerio');
+const status = require('minecraft-server-status-improved');
 const filter = new Filter();
 var os = require('os');
 const fs = require('fs');
@@ -34,14 +35,6 @@ client.on('ready', init => {
   url: "https://www.twitch.tv/nasa"
   });
 });
-client.on('guildDelete', guild => {
-  const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
-  hook.send("\"{\"action\":\"removed\""+",\"guild\":\""+guild.name+"\"}\"");
-});
-client.on('guildCreate', guild => {
-  const hook = new Discord.WebhookClient('866715361097416774', process.env.HOOK);
-  hook.send("\"{\"action\":\"added\""+",\"guild\":\""+guild.name+"\"}\"");
-});
 client.on('message', msg => {
 	if (msg.author.bot == true) {
 		return;
@@ -57,36 +50,7 @@ client.on('message', msg => {
 });
 function check(msg){
   const command = msg.content.substr(2);
-  if (command.toLowerCase() == 'hidden') {
-    msg.channel.send({ embed: {
-      color: '#221C35',
-      title: "Restricted",
-      description: "Only for selected people",
-      thumbnail: {
-		    url: 'https://cdn.discordapp.com/attachments/727146283097260084/876887603285217290/padlock.png',
-	    },
-      fields: [
-		{
-			name: '[🔣] Developer',
-			value: '`eval`, `covid`, `chem`, `phy`',
-      inline: false,
-		},{
-			name: '[🚮] Moderation',
-			value: '`kick`, `ban`, `unban`, `purge`',
-      inline: false,
-		},
-		{
-			name: 'Vote Link',
-			value: 'https://tinyurl.com/qubit-vote',
-			inline: false,
-		}
-  	],
-      footer: {
-        text: "Locked and strictly proctected"
-      }
-    }});
-    msg.react("👁️");
-  }else if (command.toLowerCase() == 'eval') {
+  if (command.toLowerCase() == 'eval') {
     msg.lineReplyNoMention('Usage: `eval [code]`\nE.g. `q!eval console.log("debug")`');
   }else if (command.toLowerCase().startsWith('eval ')) {
     if (msg.author.id == '735753581298319370' || msg.author.id == '597705976488919040'){
@@ -114,44 +78,29 @@ function check(msg){
   }else if (command.toLowerCase()=="project"){
     msg.channel.send("https://github.com/Mini-Ware/Qubit");
     msg.react("🤝");
-  }else if (command.toLowerCase()=="covid"){
-    if (msg.author.id == '735753581298319370' || msg.author.id == '597705976488919040' || msg.author.id == '669822875909226506'){
-    request('https://www.moh.gov.sg/covid-19/statistics', function (error, response, html) {
-      if (!error && response.statusCode == 200) {
-          var $ = cheerio.load(html);
-          var parse = $.html();
-          var image = parse.split('<img src="/images/librariesprovider5/');
-          var link = image[4].split('?')
-          msg.channel.send({ embed: {
-            title: "Breakdown of Singapore Cases by Vaccination and Severity of Condition",
-            description: "(in the last 28 days)",
-            color: '#221C35',
-            image: {
-              url: "https://www.moh.gov.sg/images/librariesprovider5/"+link[0]
-            },
-            fields: [
-              {
-                name: 'Vaccines are effective',
-                value: '- Increasing your chances of getting infected\n- Making new cases harder to detect',
-                inline: false,
-              },{
-                name: 'Legend',
-                value: '🟥 Deceased\n🟧 Ever in Intensive Care Unit\n🟪 Ever Required Oxygen Supplementation\n🟩 Asymptomatic/ Mild Symptoms',
-                inline: false,
-              },{
-                name: 'Source of information',
-                value: 'https://www.moh.gov.sg/covid-19/statistics',
-                inline: false,
-              }
-            ]
-          }});
+  }else if (command.toLowerCase().startsWith("mc ")){
+    const mention = command.substr(3);
+    status(mention, 25565, (err, response) => {
+      if (err){
+        msg.channel.send("Data is currently not avaliable");
+      }else if (response.online == false){
+        msg.channel.send("Server is currently offline");
+      }else{
+
+        //extract player names
+        names = "Players:";
+        x = 0;
+        while (x < response.players.sample.length){
+          names += " "+JSON.stringify(response.players.sample[x]["name"]);
+          x = x+1;
+        }
+        msg.channel.send({ embed: {
+                color: '#221C35',
+                description: response.motd+"\nVersion: "+response.server.name+"\nNo. of players: "+response.players.now+"/"+response.players.max+"\n"+names,
+        }});
       }
-    });
-    msg.react("🦠");
-    }else{
-      msg.channel.send("Access denied");
-      msg.react("🚫");
-    }
+  })
+    msg.react("⛏️");
   }else if (command.toLowerCase().startsWith("encode b64 ")){
     const mention = command.substr(11);
     var b64 = Buffer.from(mention, 'utf-8').toString('base64');
@@ -338,11 +287,16 @@ function check(msg){
     const jokemsg = collection.joke[jokenum]
     msg.channel.send(jokemsg);
     msg.react("🤡");
-  }else if (command.toLowerCase().startsWith("chem")){
+  }else if (command.toLowerCase().startsWith("chem") && (msg.author.id == '735753581298319370' || msg.author.id == '597705976488919040')){
     const chemnum = Math.floor(Math.random()*collection.chem.length)
     const chemmsg = collection.chem[chemnum]
     msg.channel.send(chemmsg);
     msg.react("🧪");
+  }else if (command.toLowerCase().startsWith("phy") && (msg.author.id == '735753581298319370' || msg.author.id == '597705976488919040')){
+    const phynum = Math.floor(Math.random()*collection.phy.length)
+    const phymsg = collection.phy[phynum]
+    msg.channel.send(phymsg);
+    msg.react("⚙️");
   }else if (command.toLowerCase().startsWith("pickup")){
     const pickupnum = Math.floor(Math.random()*collection.pickup.length)
     const pickupmsg = collection.pickup[pickupnum]
@@ -865,7 +819,7 @@ function check(msg){
 		},
 		{
 			name: '[🔢] Tool',
-			value: '`ping`, `ip`, `whois`, `encode`, `decode`',
+			value: '`ping`, `ip`, `whois`, `mc`, `encode`, `decode`',
 			inline: false,
 		},
 		{
