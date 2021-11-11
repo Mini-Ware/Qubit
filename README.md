@@ -9,6 +9,6 @@ Random: decide, dice, 8ball, flip, quote</br>
 Fun: wyr, riddle, joke, roast, pickup</br>
 Media: spotify, youtube, wiki, gif, photo</br>
 Activity: ytt, chess, poker, betray, fishing</br>
-Tool: ping, ip, whois, encode, decode</br></br>
+Tool: ping, ip, whois, mc, encode, decode</br></br>
 More improvements will be added frequently!!</br></br>
  [Add Qubit into your server](https://dsc.gg/qubit) | [Verified by Top.gg](https://top.gg/bot/826031374766440459)
