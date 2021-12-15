@@ -16,8 +16,13 @@ const client = new Discord.Client({
 client.login(process.env.TOKEN);
 
 client.on('interactionCreate', interaction => {
-	if (!interaction.isCommand()) return;
-
+        try{
+		if (!interaction.isCommand() || interaction.channel.type !== 'GUILD_TEXT'){
+			return;
+		}
+	}catch(err){
+		return;
+	}
 	if (interaction.commandName === 'debug') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton().setDisabled(true)
@@ -26,6 +31,96 @@ client.on('interactionCreate', interaction => {
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: 'Debug', components: [row] });
+	}else if (interaction.commandName === 'fishing') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🎣')
+				.setStyle('PRIMARY'),
+		);
+		if(interaction.member.voice.channel) {
+		    client.discordTogether.createTogetherCode(interaction.member.voice.channel.id, 'fishing').then(async invite => {
+		      if(invite.code){
+		        interaction.reply({ content: `Click on the link below to start watching YouTube Together\n${invite.code}`, components: [row] })
+		      }else{
+		        interaction.reply({ content: "Sorry, the YouTube Together activity has trouble starting", components: [row] })
+		      }
+		    });
+		}else{
+		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
+		}
+	}else if (interaction.commandName === 'betray') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🕵️')
+				.setStyle('PRIMARY'),
+		);
+		if(interaction.member.voice.channel) {
+		    client.discordTogether.createTogetherCode(interaction.member.voice.channel.id, 'betrayal').then(async invite => {
+		      if(invite.code){
+		        interaction.reply({ content: `Click on the link below to start watching YouTube Together\n${invite.code}`, components: [row] })
+		      }else{
+		        interaction.reply({ content: "Sorry, the YouTube Together activity has trouble starting", components: [row] })
+		      }
+		    });
+		}else{
+		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
+		}
+	}else if (interaction.commandName === 'poker') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🃏')
+				.setStyle('PRIMARY'),
+		);
+		if(interaction.member.voice.channel) {
+		    client.discordTogether.createTogetherCode(interaction.member.voice.channel.id, 'poker').then(async invite => {
+		      if(invite.code){
+		        interaction.reply({ content: `Click on the link below to start watching YouTube Together\n${invite.code}`, components: [row] })
+		      }else{
+		        interaction.reply({ content: "Sorry, the YouTube Together activity has trouble starting", components: [row] })
+		      }
+		    });
+		}else{
+		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
+		}
+	}else if (interaction.commandName === 'chess') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('♟️')
+				.setStyle('PRIMARY'),
+		);
+		if(interaction.member.voice.channel) {
+		    client.discordTogether.createTogetherCode(interaction.member.voice.channel.id, 'chess').then(async invite => {
+		      if(invite.code){
+		        interaction.reply({ content: `Click on the link below to start watching YouTube Together\n${invite.code}`, components: [row] })
+		      }else{
+		        interaction.reply({ content: "Sorry, the YouTube Together activity has trouble starting", components: [row] })
+		      }
+		    });
+		}else{
+		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
+		}
+	}else if (interaction.commandName === 'ytt') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🛋️')
+				.setStyle('PRIMARY'),
+		);
+		if(interaction.member.voice.channel) {
+		    client.discordTogether.createTogetherCode(interaction.member.voice.channel.id, 'youtube').then(async invite => {
+		      if(invite.code){
+		        interaction.reply({ content: `Click on the link below to start watching YouTube Together\n${invite.code}`, components: [row] })
+		      }else{
+		        interaction.reply({ content: "Sorry, the YouTube Together activity has trouble starting", components: [row] })
+		      }
+		    });
+		}else{
+		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
+		}
 	}else if (interaction.commandName === 'invite') {
 		interaction.reply({ content: 'https://dsc.gg/qubit' });
 	}else if (interaction.commandName === 'project') {
@@ -150,7 +245,90 @@ client.on('interactionCreate', interaction => {
 		    }
 		    }catch(err){}
 		    interaction.followUp(list[option]);
+	}else if (interaction.commandName === 'ip') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('📡')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
+		const mention = interaction.options.getString('domain').substr(3).replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
+		    const dns = require("dns");
+		    var ipresult = ["","","",""];
+		    dns.resolve4(mention, { ttl: true }, (err, addresses) => {
+		      if (err) {
+			interaction.followUp("Sorry, network is unreachable");
+			return;
+		      }else{
+			const chat = client.channels.cache.get("847029608662040626");
+			chat.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(newmsg => {
+			  dns.resolve6(mention, { ttl: true }, (err, addresses) => {
+			    if (err){
+			      interaction.followUp({ embeds: [{
+				color: '#221C35',
+				description: newmsg.content.replace(/`/g, ""),
+			      }]});
+			    }else{
+			      interaction.followUp({ embeds: [{
+				color: '#221C35',
+				description: newmsg.content.replace(/`/g, "")+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl,
+			      }]});
+			    }
+			    newmsg.delete();
+			  });
+			});
+		      }
+		    });
+	}else if (interaction.commandName === 'whois') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🌐')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
+		const mention = interaction.options.getString('domain').replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
+		const dns = require("dns");
+		var whois = require('whois');
+		whois.lookup(mention, (err, data) => {
+		  if (err){
+			interaction.followUp("Sorry, no information could be retrieved");
+		      }else{
+			if (data.search("%") != -1 || (data.toLowerCase().search("no") != -1 && (data.toLowerCase().search("match") != -1 || data.toLowerCase().search("found") != -1 || data.toLowerCase().search("such domain") != -1)) || data.search("\\n") == -1){
+			  interaction.followUp("Sorry, no information could be retrieved");
+			  return;
+			}else if (data.search(">") != -1){
+			  const q = data.split(">");
+			  var k = q[0].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
+			}else if (data.search("NetRange: ") != -1){
+			  const q = data.split("NetRange: ");
+			  var k = "NetRange: "+q[1].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
+			}else{
+			  var k = data.replace(/https:\/\//g, "").replace(/http:\/\//g, "");
+			}
+			var j = k.split("\n")
+			var u = 0;
+			var h = [];
+			while (u < j.length){
+			  if (j[u].search("Prohibited") != -1 || j[u].search("Comment") != -1 || j[u].search("#") != -1){
+			    j[u] = "";
+			  }
+			  u = u+1;
+			}
+			k = j.join("\n");
+			k = k.replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n");
+			if (k.length > 2045){
+			  k = k.substring(0,2045)+"...";
+			}
+			interaction.followUp({ embeds: [{
+			  color: '#221C35',
+			  description: k
+			}]});
+		      }
+		    });
 	}else if (interaction.commandName === 'eval') {
+	    if (interaction.user.id == '597705976488919040'){
 		var exec = interaction.options.getString('code');
 		client.emojis.cache.forEach(emoji => {
 		  if (exec.search(":"+emoji.name+":") != -1 && (exec.search("<") == -1 && exec.search(">") == -1)){
@@ -178,5 +356,14 @@ client.on('interactionCreate', interaction => {
 		      return;
 		    }
 		  }
+	    }else{
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setLabel('🚫')
+				.setStyle('PRIMARY'),
+		);
+	      interaction.reply({ content: "Access denied", components: [row] });
+	    }
 	}
 });
