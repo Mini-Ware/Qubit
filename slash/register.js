@@ -23,6 +23,16 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 //register global
 var commands = [];
+var fishing = new SlashCommandBuilder().setName('fishing').setDescription('Category: Activity');
+commands.push(fishing.toJSON());
+var betray = new SlashCommandBuilder().setName('betray').setDescription('Category: Activity');
+commands.push(betray.toJSON());
+var poker = new SlashCommandBuilder().setName('poker').setDescription('Category: Activity');
+commands.push(poker.toJSON());
+var chess = new SlashCommandBuilder().setName('chess').setDescription('Category: Activity');
+commands.push(chess.toJSON());
+var ytt = new SlashCommandBuilder().setName('ytt').setDescription('Category: Activity');
+commands.push(ytt.toJSON());
 var pickup = new SlashCommandBuilder().setName('pickup').setDescription('Category: Fun');
 commands.push(pickup.toJSON());
 var roast = new SlashCommandBuilder().setName('roast').setDescription('Category: Fun');
@@ -50,6 +60,16 @@ commands.push(ball.toJSON());
 var decide = new SlashCommandBuilder().setName('decide').setDescription('Category: Random').addStringOption(option =>
 		option.setName('options').setDescription('E.g. go jogging, watch movie, play games').setRequired(true));
 commands.push(decide.toJSON());
+var cmd = new SlashCommandBuilder().setName('eval').setDescription('Category: Dev').addStringOption(option =>
+		option.setName('code').setDescription('E.g. console.log("debug")').setRequired(true));
+commands.push(cmd.toJSON());
+var whois = new SlashCommandBuilder().setName('whois').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('domain').setDescription('E.g. google.com').setRequired(true));
+commands.push(whois.toJSON());
+var ip = new SlashCommandBuilder().setName('ip').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('domain').setDescription('E.g. google.com').setRequired(true));
+commands.push(ip.toJSON());
+
 console.log("Started refreshing global application (/) commands.");
 rest.put(
 	Routes.applicationCommands("826031374766440459"),
