@@ -33,6 +33,8 @@ var chess = new SlashCommandBuilder().setName('chess').setDescription('Category:
 commands.push(chess.toJSON());
 var ytt = new SlashCommandBuilder().setName('ytt').setDescription('Category: Activity');
 commands.push(ytt.toJSON());
+var rather = new SlashCommandBuilder().setName('wyr').setDescription('Category: Fun');
+commands.push(rather.toJSON());
 var pickup = new SlashCommandBuilder().setName('pickup').setDescription('Category: Fun');
 commands.push(pickup.toJSON());
 var roast = new SlashCommandBuilder().setName('roast').setDescription('Category: Fun');
@@ -43,10 +45,8 @@ var riddle = new SlashCommandBuilder().setName('riddle').setDescription('Categor
 commands.push(riddle.toJSON());
 var quote = new SlashCommandBuilder().setName('quote').setDescription('Category: Random');
 commands.push(quote.toJSON());
-var project = new SlashCommandBuilder().setName('project').setDescription('Category: Misc');
-commands.push(project.toJSON());
-var invite = new SlashCommandBuilder().setName('invite').setDescription('Category: Misc');
-commands.push(invite.toJSON());
+var help = new SlashCommandBuilder().setName('help').setDescription('Category: Misc');
+commands.push(help.toJSON());
 var ping = new SlashCommandBuilder().setName('ping').setDescription('Category: Tool');
 commands.push(ping.toJSON());
 var flip = new SlashCommandBuilder().setName('flip').setDescription('Category: Random');
@@ -69,6 +69,17 @@ commands.push(whois.toJSON());
 var ip = new SlashCommandBuilder().setName('ip').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('domain').setDescription('E.g. google.com').setRequired(true));
 commands.push(ip.toJSON());
+var mc = new SlashCommandBuilder().setName('mc').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('domain').setDescription('E.g. 2b2t.org').setRequired(true));
+commands.push(mc.toJSON());
+var encode = new SlashCommandBuilder().setName('encode').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('type').setDescription('E.g. b64').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
+		option.setName('string').setDescription('E.g. sample').setRequired(true));
+commands.push(encode.toJSON());
+var decode = new SlashCommandBuilder().setName('decode').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('type').setDescription('E.g. b64').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
+		option.setName('string').setDescription('E.g. c2FtcGxl').setRequired(true));
+commands.push(decode.toJSON());
 
 console.log("Started refreshing global application (/) commands.");
 rest.put(
@@ -79,9 +90,6 @@ console.log("Successfully reloaded global application (/) commands.");
 
 //register guild
 hidden = [];
-var cmd = new SlashCommandBuilder().setName('eval').setDescription('Category: Dev').addStringOption(option =>
-		option.setName('code').setDescription('console.log("debug")').setRequired(true));
-hidden.push(cmd.toJSON());
 var debug = new SlashCommandBuilder().setName('debug').setDescription('Category: Dev');
 hidden.push(debug.toJSON());
 
