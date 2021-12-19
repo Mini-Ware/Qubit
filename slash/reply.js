@@ -1,6 +1,19 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const wyr = require('wyr');
+const all = require("everyday-fun");
+const status = require('minecraft-server-status-improved');
+const fs = require('fs');
+var collection = {};
+fs.readFile('response.json', 'utf8' , (err, data) => {
+  if (err) {
+    console.error(err)
+    return
+  }
+  eval("collection = "+data);
+})
+
 const Discord = require('discord.js');
 const client = new Discord.Client({
 	allowedMentions: { parse: ['users'] },
@@ -15,6 +28,13 @@ const client = new Discord.Client({
 });
 client.login(process.env.TOKEN);
 
+client.on('ready', init => {
+	client.user.setActivity("/help", {
+  type: "STREAMING",
+  url: "https://www.twitch.tv/nasa"
+  });
+});
+
 client.on('interactionCreate', interaction => {
         try{
 		if (!interaction.isCommand() || interaction.channel.type !== 'GUILD_TEXT'){
@@ -25,17 +45,181 @@ client.on('interactionCreate', interaction => {
 	}
 	if (interaction.commandName === 'debug') {
 		const row = new MessageActionRow().addComponents(
-			new MessageButton().setDisabled(true)
+			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🧭')
+				.setEmoji('🧭')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: 'Debug', components: [row] });
+	}else if (interaction.commandName === 'wyr') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('💭')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: 'Would you rather...', components: [row] });
+		wyr().then((response) => {
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId('blue')
+					.setEmoji('🔵')
+					.setStyle('PRIMARY'),
+				new MessageButton()
+					.setCustomId('red')
+					.setEmoji('🔴')
+					.setStyle('PRIMARY'),
+			)
+			interaction.editReply({ content: "Blue: "+response.blue.question+"\nRed: "+response.red.question, components: [row] });
+		});
+	}else if (interaction.commandName === 'encode') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('🔒')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: interaction.options.getString('string'), components: [row] });
+		if (interaction.options.getString('type') == "b64"){
+			const mention = interaction.options.getString('string');
+			var b64 = Buffer.from(mention, 'utf-8').toString('base64');
+			if (b64.length > 2000){
+				interaction.followUp("Sorry, the output is too large to display")
+			}else{
+				interaction.followUp(b64);
+			}
+		}else if (interaction.options.getString('type') == "hex"){
+			const mention = interaction.options.getString('string');
+			var bhex = Buffer.from(mention, 'utf-8').toString('hex');
+			if (bhex.length > 2000){
+				interaction.followUp("Sorry, the output is too large to display")
+			}else{
+				interaction.followUp(bhex.toUpperCase());
+			}
+		}else if (interaction.options.getString('type') == "bin"){
+			const mention = interaction.options.getString('string');
+			var n = 0;
+			var fullstr = "";
+			while (n <= (mention.length-1)){
+			    var sus = parseInt(mention.charCodeAt(n)).toString(2);
+			    while (sus.length < 8){
+			       sus = "0"+sus;
+			    }
+			    fullstr += sus;
+			    n = n+1;
+			}
+			if (fullstr.length > 2000){
+			    interaction.followUp("Sorry, the output is too large to display")
+			}else{
+			    interaction.followUp(fullstr);
+			}
+		}else if (interaction.options.getString('type') == "url"){
+			const mention = interaction.options.getString('string');
+			if (encodeURIComponent(mention).length > 2000){
+				interaction.followUp("Sorry, the output is too large to display")
+			}else{
+				interaction.followUp(encodeURIComponent(mention));
+			}
+		}
+	}else if (interaction.commandName === 'decode') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('🔑')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: interaction.options.getString('string'), components: [row] });
+		if (interaction.options.getString('type') == "b64"){
+			const mention = interaction.options.getString('string');
+			interaction.followUp(Buffer.from(mention, 'base64').toString('utf-8'));
+		}else if (interaction.options.getString('type') == "hex"){
+			const mention = interaction.options.getString('string');
+			interaction.followUp(Buffer.from(mention.replace(/ /g, ""), 'hex').toString('utf-8'));
+		}else if (interaction.options.getString('type') == "bin"){
+			const mention = interaction.options.getString('string').replace(/ /g, "");
+			var fullstr = "";
+			var n = 0;
+			var midstr = "";
+			var stastr = mention;
+			var b = 0;
+			var c = 0;
+			var a = 0;
+			var coolstr = "";
+			while (b < Math.round(mention.length/8)){
+			  coolstr = coolstr+stastr[a];
+			  a = a+1;
+			  c = c+1;
+			  if (c >= 8){
+			    c = 0;
+			    b = b+1;
+			    coolstr = coolstr+" ";
+			  }
+    			}
+			midstr = coolstr.split("").reverse().join("").substr(1).split("").reverse().join("").split(" ");
+			while (n <= (midstr.length-1)){
+			    fullstr += String.fromCharCode(parseInt(midstr[n], 2))
+			    n = n+1;
+			}
+			interaction.followUp(fullstr);
+		}else if (interaction.options.getString('type') == "url"){
+			const mention = interaction.options.getString('string');
+			interaction.followUp(decodeURIComponent(mention));
+		}
+	}else if (interaction.commandName === 'help') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('📬')
+				.setStyle('PRIMARY'),
+			new MessageButton()
+				.setURL('https://dsc.gg/qubit')
+				.setLabel('Invite')
+				.setStyle('LINK'),
+			new MessageButton()
+				.setURL('https://github.com/Mini-Ware/Qubit')
+				.setLabel('Project')
+				.setStyle('LINK'),
+		);
+		interaction.reply({ embeds: [{
+		      color: '#221C35',
+		      title: "Qubit",
+		      description: "A simple yet powerful utility bot",
+		      thumbnail: {
+				    url: 'https://cdn.discordapp.com/avatars/826031374766440459/37a324d853cade9ee8fdd5b2b8e40ce7.webp?size=1024',
+			    },
+		      fields: [
+				{
+					name: '[*️⃣] Random',
+					value: '`decide`, `dice`, `8ball`, `flip`, `quote`',
+		      inline: false,
+				},
+		    {
+					name: '[#️⃣] Fun',
+					value: '`wyr`, `riddle`, `joke`, `roast`, `pickup`',
+					inline: false,
+				},
+				{
+					name: '[🎦] Media',
+					value: '`spotify`, `youtube`, `wiki`, `gif`, `photo`',
+					inline: false,
+				},
+				{
+					name: '[⏯️] Activity',
+					value: '`ytt`, `chess`, `poker`, `betray`, `fishing`',
+					inline: false,
+				},
+				{
+					name: '[🔢] Tool',
+					value: '`ping`, `ip`, `whois`, `mc`, `encode`, `decode`',
+					inline: false,
+				}
+		  	]
+		    }], components: [row] });
 	}else if (interaction.commandName === 'fishing') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🎣')
+				.setEmoji('🎣')
 				.setStyle('PRIMARY'),
 		);
 		if(interaction.member.voice.channel) {
@@ -53,7 +237,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🕵️')
+				.setEmoji('🕵️')
 				.setStyle('PRIMARY'),
 		);
 		if(interaction.member.voice.channel) {
@@ -71,7 +255,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🃏')
+				.setEmoji('🃏')
 				.setStyle('PRIMARY'),
 		);
 		if(interaction.member.voice.channel) {
@@ -89,7 +273,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('♟️')
+				.setEmoji('♟️')
 				.setStyle('PRIMARY'),
 		);
 		if(interaction.member.voice.channel) {
@@ -107,7 +291,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🛋️')
+				.setEmoji('🛋️')
 				.setStyle('PRIMARY'),
 		);
 		if(interaction.member.voice.channel) {
@@ -129,7 +313,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('☀️')
+				.setEmoji('☀️')
 				.setStyle('PRIMARY'),
 		);
 		const quotemsg = all.getRandomQuote();
@@ -138,7 +322,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🧠')
+				.setEmoji('🧠')
 				.setStyle('PRIMARY'),
 		);
 		const riddlemsg = all.getRandomRiddle();
@@ -147,7 +331,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🤡')
+				.setEmoji('🤡')
 				.setStyle('PRIMARY'),
 		);
 		const jokenum = Math.floor(Math.random()*collection.joke.length);
@@ -157,7 +341,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🔥')
+				.setEmoji('🔥')
 				.setStyle('PRIMARY'),
 		);
 		const roastnum = Math.floor(Math.random()*collection.roast.length);
@@ -167,7 +351,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('💖')
+				.setEmoji('💖')
 				.setStyle('PRIMARY'),
 		);
 		const pickupnum = Math.floor(Math.random()*collection.pickup.length);
@@ -177,7 +361,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🏓')
+				.setEmoji('🏓')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: "Websocket: "+client.ws.ping+"ms", components: [row] });
@@ -185,7 +369,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🪙')
+				.setEmoji('🪙')
 				.setStyle('PRIMARY'),
 		);
 		var land = Math.floor(Math.random()*2)
@@ -198,7 +382,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🎲')
+				.setEmoji('🎲')
 				.setStyle('PRIMARY'),
 		);
 		var range = interaction.options.getInteger('sides');
@@ -208,7 +392,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🔮')
+				.setEmoji('🔮')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: interaction.options.getString('question'), components: [row] });
@@ -228,7 +412,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('💡')
+				.setEmoji('💡')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: interaction.options.getString('options'), components: [row] });
@@ -245,15 +429,47 @@ client.on('interactionCreate', interaction => {
 		    }
 		    }catch(err){}
 		    interaction.followUp(list[option]);
+	}else if (interaction.commandName === 'mc') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('⛏️')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
+		const mention = interaction.options.getString('domain');
+		    status(mention, 25565, (err, response) => {
+		      if (err){
+			interaction.followUp("Data is currently not avaliable");
+		      }else if (response.online == false){
+			interaction.followUp("Server is currently offline");
+		      }else{
+
+			//extract player names
+			names = "";
+			if (response.players.sample.length > 0){
+			  names = "Players:";
+			  x = 0;
+			  while (x < response.players.sample.length){
+			    names += " "+JSON.stringify(response.players.sample[x]["name"]);
+			    x = x+1;
+			  }
+			}
+			interaction.followUp({ embeds: [{
+				color: '#221C35',
+				description: "```"+response.motd+"\nVersion: "+response.server.name+"\nNo. of players: "+response.players.now+"/"+response.players.max+"\n"+names+"```"
+			}]});
+		      }
+		  })
 	}else if (interaction.commandName === 'ip') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('📡')
+				.setEmoji('📡')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
-		const mention = interaction.options.getString('domain').substr(3).replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
+		const mention = interaction.options.getString('domain').replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
 		    const dns = require("dns");
 		    var ipresult = ["","","",""];
 		    dns.resolve4(mention, { ttl: true }, (err, addresses) => {
@@ -267,12 +483,12 @@ client.on('interactionCreate', interaction => {
 			    if (err){
 			      interaction.followUp({ embeds: [{
 				color: '#221C35',
-				description: newmsg.content.replace(/`/g, ""),
+				description: "```"+newmsg.content.replace(/`/g, "")+"```",
 			      }]});
 			    }else{
 			      interaction.followUp({ embeds: [{
 				color: '#221C35',
-				description: newmsg.content.replace(/`/g, "")+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl,
+				description: "```"+newmsg.content.replace(/`/g, "")+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl+"```",
 			      }]});
 			    }
 			    newmsg.delete();
@@ -284,7 +500,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🌐')
+				.setEmoji('🌐')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
@@ -318,12 +534,12 @@ client.on('interactionCreate', interaction => {
 			}
 			k = j.join("\n");
 			k = k.replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n");
-			if (k.length > 2045){
-			  k = k.substring(0,2045)+"...";
+			if (k.length > 2039){
+			  k = k.substring(0,2039)+"...";
 			}
 			interaction.followUp({ embeds: [{
 			  color: '#221C35',
-			  description: k
+			  description: "```"+k+"```"
 			}]});
 		      }
 		    });
@@ -338,7 +554,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('📟')
+				.setEmoji('📟')
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: exec, components: [row] });
@@ -349,7 +565,7 @@ client.on('interactionCreate', interaction => {
 			const row = new MessageActionRow().addComponents(
 				new MessageButton()
 					.setCustomId('primary')
-					.setLabel('⚠️')
+					.setEmoji('⚠️')
 					.setStyle('PRIMARY'),
 			);
 		      interaction.followUp({ content: "Sorry, an error has occurred", components: [row] });
@@ -360,7 +576,7 @@ client.on('interactionCreate', interaction => {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setLabel('🚫')
+				.setEmoji('🚫')
 				.setStyle('PRIMARY'),
 		);
 	      interaction.reply({ content: "Access denied", components: [row] });
