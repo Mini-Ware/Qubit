@@ -72,6 +72,15 @@ commands.push(ip.toJSON());
 var mc = new SlashCommandBuilder().setName('mc').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('domain').setDescription('E.g. 2b2t.org').setRequired(true));
 commands.push(mc.toJSON());
+var spotify = new SlashCommandBuilder().setName('spotify').setDescription('Category: Media').addStringOption(option =>
+		option.setName('query').setDescription('E.g. edm').setRequired(true));
+commands.push(spotify.toJSON());
+var youtube = new SlashCommandBuilder().setName('youtube').setDescription('Category: Media').addStringOption(option =>
+		option.setName('query').setDescription('E.g. rover landing').setRequired(true));
+commands.push(youtube.toJSON());
+var wiki = new SlashCommandBuilder().setName('wiki').setDescription('Category: Media').addStringOption(option =>
+		option.setName('query').setDescription('E.g. solar system').setRequired(true));
+commands.push(wiki.toJSON());
 var encode = new SlashCommandBuilder().setName('encode').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('type').setDescription('E.g. b64').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
 		option.setName('string').setDescription('E.g. sample').setRequired(true));
