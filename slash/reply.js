@@ -45,7 +45,7 @@ client.on('interactionCreate', interaction => {
 	}
 	if (interaction.commandName === 'debug') {
 		const row = new MessageActionRow().addComponents(
-			new MessageButton()
+			new MessageButton().setDisabled(true)
 				.setCustomId('primary')
 				.setEmoji('🧭')
 				.setStyle('PRIMARY'),
@@ -62,15 +62,313 @@ client.on('interactionCreate', interaction => {
 		wyr().then((response) => {
 			const row = new MessageActionRow().addComponents(
 				new MessageButton()
-					.setCustomId('blue')
+					.setCustomId(interaction.id+":1")
 					.setEmoji('🔵')
 					.setStyle('PRIMARY'),
 				new MessageButton()
-					.setCustomId('red')
+					.setCustomId(interaction.id+":2")
 					.setEmoji('🔴')
 					.setStyle('PRIMARY'),
 			)
 			interaction.editReply({ content: "Blue: "+response.blue.question+"\nRed: "+response.red.question, components: [row] });
+
+			const filter = i => (i.customId === interaction.id+":1" || i.customId === interaction.id+":2") && i.user.id === interaction.user.id;
+
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+
+			collector.on('collect', async i => {
+				if (i.customId === interaction.id+":1") {
+					collector.stop()
+					const row = new MessageActionRow().addComponents(
+						new MessageButton()
+							.setCustomId('blue')
+							.setEmoji('🔵')
+							.setStyle('SECONDARY'),
+						new MessageButton()
+							.setCustomId('red')
+							.setEmoji('🔴')
+							.setStyle('PRIMARY'),
+					)
+					i.update({ content: "Blue: "+response.blue.question+" ("+(Math.floor((Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)\nRed: "+response.red.question+" ("+(Math.ceil((Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)", components: [row] });
+				}else if (i.customId === interaction.id+":2") {
+					collector.stop()
+					const row = new MessageActionRow().addComponents(
+						new MessageButton()
+							.setCustomId('blue')
+							.setEmoji('🔵')
+							.setStyle('PRIMARY'),
+						new MessageButton()
+							.setCustomId('red')
+							.setEmoji('🔴')
+							.setStyle('SECONDARY'),
+					)
+					i.update({ content: "Blue: "+response.blue.question+" ("+(Math.floor((Number(response.blue.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)\nRed: "+response.red.question+" ("+(Math.ceil((Number(response.red.votes.replace(/,/g,""))/(Number(response.red.votes.replace(/,/g,""))+Number(response.blue.votes.replace(/,/g,"")))*100)*10)/10).toString()+"%)", components: [row] });
+				}
+			});
+		});
+	}else if (interaction.commandName === 'spotify') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('🎧')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: "Fetching relevant playlists...", components: [row] });
+		var mention = "site:open.spotify.com/playlist/ "+interaction.options.getString('query').replace(":", " ");
+		google.resultsPerPage = 20;
+		var nextCounter = 0;
+		google(mention, (err, res) => {
+			const parser = res.body.split('<a href="/url?q=');
+			var parse = "";
+			var list = [];
+			var u = 1;
+			var now = 0;
+			var prev = "";
+
+			while (u < (parser.length-1)){
+				parse = parser[u].split('&');
+				const Filter = require('bad-words');
+				const filter = new Filter();
+				if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && (interaction.options.getString('query') == filter.clean(interaction.options.getString('query')) || interaction.channel.nsfw == true)){
+					list.push(parse[0]);
+				}
+				prev = parse[0]
+				u = u+1;
+			}
+
+			if (list.length == 0){
+				result = "[Playlist 0/0]\nhttps://www.spotify.com/";
+			}else{
+				result="[Playlist "+(now+1).toString()+"/"+list.length.toString()+"]\n"+list[0];
+			}
+
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId(interaction.id+":1")
+					.setEmoji('🔼')
+					.setStyle('PRIMARY'),
+				new MessageButton()
+					.setCustomId(interaction.id+":2")
+					.setEmoji('🔽')
+					.setStyle('PRIMARY'),
+			);
+			interaction.editReply({ content: result, components: [row] });
+
+			const filter = i => (i.customId === interaction.id+":1" || i.customId === interaction.id+":2") && i.user.id === interaction.user.id;
+
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+
+			collector.on('collect', async i => {
+				if (i.customId === interaction.id+":1") {
+					if (now+1 > 1){
+						now = now-1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Playlist "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result, components: [row] });
+					}
+				}else if (i.customId === interaction.id+":2") {
+					if (now+1 < list.length){
+						now = now+1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Playlist "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result, components: [row] });
+					}
+				}
+			});
+		});
+	}else if (interaction.commandName === 'youtube') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('📺')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: "Fetching relevant videos...", components: [row] });
+		var mention = "site:youtube.com/watch "+interaction.options.getString('query').replace(":", " ");
+		google.resultsPerPage = 20;
+		var nextCounter = 0;
+		google(mention, (err, res) => {
+			const parser = res.body.split('<a href="/url?q=');
+			var parse = "";
+			var list = [];
+			var u = 1;
+			var now = 0;
+			var prev = "";
+
+			while (u < (parser.length-1)){
+				parse = parser[u].split('&');
+				const Filter = require('bad-words');
+				const filter = new Filter();
+				if (prev != parse[0] && parse[0].search("google")==-1 && (interaction.options.getString('query') == filter.clean(interaction.options.getString('query')) || interaction.channel.nsfw == true)){
+					list.push(parse[0]);
+				}
+				prev = parse[0]
+				u = u+1;
+			}
+
+			if (list.length == 0){
+				result = "[Video 0/0]\nhttps://www.youtube.com/";
+			}else{
+				result="[Video "+(now+1).toString()+"/"+list.length.toString()+"]\n"+list[0];
+			}
+
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId(interaction.id+":1")
+					.setEmoji('🔼')
+					.setStyle('PRIMARY'),
+				new MessageButton()
+					.setCustomId(interaction.id+":2")
+					.setEmoji('🔽')
+					.setStyle('PRIMARY'),
+			);
+			interaction.editReply({ content: result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+
+			const filter = i => (i.customId === interaction.id+":1" || i.customId === interaction.id+":2") && i.user.id === interaction.user.id;
+
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+
+			collector.on('collect', async i => {
+				if (i.customId === interaction.id+":1") {
+					if (now+1 > 1){
+						now = now-1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Video "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+					}
+				}else if (i.customId === interaction.id+":2") {
+					if (now+1 < list.length){
+						now = now+1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Video "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+					}
+				}
+			});
+		});
+	}else if (interaction.commandName === 'wiki') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('📄')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: "Fetching relevant articles...", components: [row] });
+		var mention = "site:en.wikipedia.org/wiki/ "+interaction.options.getString('query').replace(":", " ");
+		google.resultsPerPage = 20;
+		var nextCounter = 0;
+		google(mention, (err, res) => {
+			const parser = res.body.split('<a href="/url?q=');
+			var parse = "";
+			var list = [];
+			var u = 1;
+			var now = 0;
+			var prev = "";
+
+			while (u < (parser.length-1)){
+				parse = parser[u].split('&');
+				const Filter = require('bad-words');
+				const filter = new Filter();
+				if (prev != parse[0] && parse[0].search("google")==-1 && parse[0].search("%")==-1 && (interaction.options.getString('query') == filter.clean(interaction.options.getString('query')) || interaction.channel.nsfw == true)){
+					list.push(parse[0]);
+				}
+				prev = parse[0]
+				u = u+1;
+			}
+
+			if (list.length == 0){
+				result = "[Article 0/0]\nhttps://www.wikipedia.org/";
+			}else{
+				result="[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+list[0];
+			}
+
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId(interaction.id+":1")
+					.setEmoji('🔼')
+					.setStyle('PRIMARY'),
+				new MessageButton()
+					.setCustomId(interaction.id+":2")
+					.setEmoji('🔽')
+					.setStyle('PRIMARY'),
+			);
+			interaction.editReply({ content: result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+
+			const filter = i => (i.customId === interaction.id+":1" || i.customId === interaction.id+":2") && i.user.id === interaction.user.id;
+
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
+
+			collector.on('collect', async i => {
+				if (i.customId === interaction.id+":1") {
+					if (now+1 > 1){
+						now = now-1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+					}
+				}else if (i.customId === interaction.id+":2") {
+					if (now+1 < list.length){
+						now = now+1;
+						result=list[now];
+						const row = new MessageActionRow().addComponents(
+							new MessageButton()
+								.setCustomId(interaction.id+":1")
+								.setEmoji('🔼')
+								.setStyle('PRIMARY'),
+							new MessageButton()
+								.setCustomId(interaction.id+":2")
+								.setEmoji('🔽')
+								.setStyle('PRIMARY'),
+						)
+						i.update({ content: "[Article "+(now+1).toString()+"/"+list.length.toString()+"]\n"+result.replace("%3F", "?").replace("%3D", "="), components: [row] });
+					}
+				}
+			});
 		});
 	}else if (interaction.commandName === 'encode') {
 		const row = new MessageActionRow().addComponents(
