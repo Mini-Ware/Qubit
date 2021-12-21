@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const google = require('google');
 const wyr = require('wyr');
 const all = require("everyday-fun");
 const status = require('minecraft-server-status-improved');
@@ -35,6 +36,16 @@ client.on('ready', init => {
   });
 });
 
+const { DiscordTogether } = require('discord-together');
+client.discordTogether = new DiscordTogether(client);
+
+const { MessageActionRow, MessageButton } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v8');
+
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+
 client.on('interactionCreate', interaction => {
         try{
 		if (!interaction.isCommand() || interaction.channel.type !== 'GUILD_TEXT'){
@@ -51,6 +62,53 @@ client.on('interactionCreate', interaction => {
 				.setStyle('PRIMARY'),
 		);
 		interaction.reply({ content: 'Debug', components: [row] });
+	}else if (interaction.commandName === 'icon') {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setURL(interaction.guild.iconURL())
+				.setLabel('Download')
+				.setStyle('LINK'),
+		);
+		interaction.reply({ embeds: [{
+			title: interaction.guild.name,
+			color: '#221C35',
+			image: {
+				url: interaction.guild.iconURL()
+			}
+		}], components: [row] });
+	}else if (interaction.commandName === 'emoji') {
+		var command = interaction.options.getString('emote');
+		if (command.search(":") != -1 && command.search(">") != -1 && command.search("<") != -1){
+			var emoji = command.split(":");
+			var eid = emoji[2].split(">");
+			var animated = emoji[0].split("<").reverse().join();
+		 	var format = ".png";
+			if (animated.startsWith("a")){
+				format = ".gif";
+			}
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setURL("https://cdn.discordapp.com/emojis/"+eid[0]+format)
+					.setLabel('Download')
+					.setStyle('LINK'),
+			);
+			var name = emoji[1][0].toUpperCase()+ emoji[1].slice(1);
+			interaction.reply({ embeds: [{
+				title: name,
+				color: '#221C35',
+				image: {
+					url: "https://cdn.discordapp.com/emojis/"+eid[0]+format
+				}
+			}], components: [row] });
+		}else{
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setCustomId('primary')
+					.setEmoji('🔍')
+					.setStyle('PRIMARY'),
+			);
+			interaction.reply({ content: "Sorry, no valid emoji could be found", components: [row] })
+		}
 	}else if (interaction.commandName === 'wyr') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
@@ -498,7 +556,7 @@ client.on('interactionCreate', interaction => {
 				},
 				{
 					name: '[🎦] Media',
-					value: '`spotify`, `youtube`, `wiki`, `gif`, `photo`',
+					value: '`spotify`, `youtube`, `wiki`, `emoji`, `icon`',
 					inline: false,
 				},
 				{
