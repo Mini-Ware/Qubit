@@ -23,6 +23,11 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 //register global
 var commands = [];
+var icon = new SlashCommandBuilder().setName('icon').setDescription('Category: Media');
+commands.push(icon.toJSON());
+var emoji = new SlashCommandBuilder().setName('emoji').setDescription('Category: Media').addStringOption(option =>
+		option.setName('emote').setDescription('E.g. :thonk:').setRequired(true));
+commands.push(emoji.toJSON());
 var fishing = new SlashCommandBuilder().setName('fishing').setDescription('Category: Activity');
 commands.push(fishing.toJSON());
 var betray = new SlashCommandBuilder().setName('betray').setDescription('Category: Activity');
