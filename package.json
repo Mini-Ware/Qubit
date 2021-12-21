@@ -1,26 +1,33 @@
 {
-  "name": "Qubit",
+  "name": "discordjs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "slash/index.js",
+  "author": "Mini-Ware",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "nodemon .",
+    "start": "node ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "bad-words": "^3.0.4",
-    "dblapi.js": "^2.4.1",
-    "discord-reply": "^0.1.2",
+    "@discordjs/builders": "^0.8.1",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.24.0",
+    "discord.js": "^13.3.0",
     "discord-together": "^1.1.53",
-    "discord.js": "^12.5.3",
+    "bad-words": "^3.0.4",
     "dns": "^0.2.2",
     "dotenv": "^10.0.0",
     "everyday-fun": "^1.1.0",
     "google": "^2.1.0",
-    "whois": "^2.13.5",
+    "minecraft-server-status-improved": "^1.0.4",
+    "request": "^2.88.2",
+    "whois": "^2.13.7",
     "wyr": "^1.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "engines": {
+    "node": ">=16.6.0"
   }
 }
