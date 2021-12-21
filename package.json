@@ -1,7 +1,7 @@
 {
   "name": "Qubit",
   "version": "1.0.0",
-  "main": "slash/index.js",
+  "main": "index.js",
   "author": "Mini-Ware",
   "license": "MIT",
   "scripts": {
