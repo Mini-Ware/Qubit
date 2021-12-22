@@ -56,12 +56,12 @@ client.on('interactionCreate', interaction => {
 	}
 	if (interaction.commandName === 'debug') {
 		const row = new MessageActionRow().addComponents(
-			new MessageButton().setDisabled(true)
+			new MessageButton()
 				.setCustomId('primary')
 				.setEmoji('🧭')
 				.setStyle('PRIMARY'),
 		);
-		interaction.reply({ content: 'Debug', components: [row] });
+		interaction.reply({ content: 'Guilds: '+client.guilds.cache.size+"\nChannels: "+client.channels.cache.size, components: [row] });
 	}else if (interaction.commandName === 'icon') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
