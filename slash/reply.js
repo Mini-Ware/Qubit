@@ -9,7 +9,7 @@ const fs = require('fs');
 var collection = {};
 fs.readFile('response.json', 'utf8' , (err, data) => {
   if (err) {
-    console.error(err)
+    console.error(err);
     return
   }
   eval("collection = "+data);
