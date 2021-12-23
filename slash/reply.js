@@ -92,9 +92,8 @@ client.on('interactionCreate', interaction => {
 					.setLabel('Download')
 					.setStyle('LINK'),
 			);
-			var name = emoji[1][0].toUpperCase()+ emoji[1].slice(1);
 			interaction.reply({ embeds: [{
-				title: name,
+				title: ":"+emoji[1]+":",
 				color: '#221C35',
 				image: {
 					url: "https://cdn.discordapp.com/emojis/"+eid[0]+format
@@ -578,7 +577,7 @@ client.on('interactionCreate', interaction => {
 				},
 				{
 					name: '[🔢] Tool',
-					value: '`ping`, `ip`, `whois`, `mc`, `encode`, `decode`',
+					value: '`ping`, `mc`, `urban`, `encode`, `decode`',
 					inline: false,
 				}
 		  	]
@@ -813,10 +812,8 @@ client.on('interactionCreate', interaction => {
 		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
 		const mention = interaction.options.getString('domain');
 		    status(mention, 25565, (err, response) => {
-		      if (err){
-			interaction.followUp("Data is currently not avaliable");
-		      }else if (response.online == false){
-			interaction.followUp("Server is currently offline");
+		      if (err || response.online == false){
+			interaction.followUp("Sorry, data is currently not avaliable");
 		      }else{
 
 			//extract player names
@@ -831,92 +828,46 @@ client.on('interactionCreate', interaction => {
 			}
 			interaction.followUp({ embeds: [{
 				color: '#221C35',
-				description: "```"+response.motd+"\nVersion: "+response.server.name+"\nNo. of players: "+response.players.now+"/"+response.players.max+"\n"+names+"```"
+				title: "Multiplayer",
+				description: "```"+response.motd+"```",
+				fields: [
+					{
+						name: 'Version',
+						value: response.server.name
+					},{
+						name: 'Players',
+						value: "Total: "+response.players.now+"/"+response.players.max+"\n"+names
+					}
+			  	]
 			}]});
 		      }
 		  })
-	}else if (interaction.commandName === 'ip') {
+	}else if (interaction.commandName === 'urban') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
-				.setEmoji('📡')
+				.setEmoji('📚')
 				.setStyle('PRIMARY'),
 		);
-		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
-		const mention = interaction.options.getString('domain').replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
-		    const dns = require("dns");
-		    var ipresult = ["","","",""];
-		    dns.resolve4(mention, { ttl: true }, (err, addresses) => {
-		      if (err) {
-			interaction.followUp("Sorry, network is unreachable");
-			return;
-		      }else{
-			const chat = client.channels.cache.get("847029608662040626");
-			chat.send("IPv4: "+addresses[0].address+"\nTTL: "+addresses[0].ttl).then(newmsg => {
-			  dns.resolve6(mention, { ttl: true }, (err, addresses) => {
-			    if (err){
-			      interaction.followUp({ embeds: [{
-				color: '#221C35',
-				description: "```"+newmsg.content.replace(/`/g, "")+"```",
-			      }]});
-			    }else{
-			      interaction.followUp({ embeds: [{
-				color: '#221C35',
-				description: "```"+newmsg.content.replace(/`/g, "")+"\nIPv6: "+addresses[0].address+"\nTTL: "+addresses[0].ttl+"```",
-			      }]});
-			    }
-			    newmsg.delete();
-			  });
-			});
-		      }
-		    });
-	}else if (interaction.commandName === 'whois') {
-		const row = new MessageActionRow().addComponents(
-			new MessageButton()
-				.setCustomId('primary')
-				.setEmoji('🌐')
-				.setStyle('PRIMARY'),
-		);
-		interaction.reply({ content: interaction.options.getString('domain'), components: [row] });
-		const mention = interaction.options.getString('domain').replace(/https:\/\//g, "").replace(/http:\/\//g, "").replace(/www./g, "");
-		const dns = require("dns");
-		var whois = require('whois');
-		whois.lookup(mention, (err, data) => {
-		  if (err){
-			interaction.followUp("Sorry, no information could be retrieved");
-		      }else{
-			if (data.search("%") != -1 || (data.toLowerCase().search("no") != -1 && (data.toLowerCase().search("match") != -1 || data.toLowerCase().search("found") != -1 || data.toLowerCase().search("such domain") != -1)) || data.search("\\n") == -1){
-			  interaction.followUp("Sorry, no information could be retrieved");
-			  return;
-			}else if (data.search(">") != -1){
-			  const q = data.split(">");
-			  var k = q[0].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
-			}else if (data.search("NetRange: ") != -1){
-			  const q = data.split("NetRange: ");
-			  var k = "NetRange: "+q[1].replace(/https:\/\//g, "").replace(/http:\/\//g, "");
-			}else{
-			  var k = data.replace(/https:\/\//g, "").replace(/http:\/\//g, "");
-			}
-			var j = k.split("\n")
-			var u = 0;
-			var h = [];
-			while (u < j.length){
-			  if (j[u].search("Prohibited") != -1 || j[u].search("Comment") != -1 || j[u].search("#") != -1){
-			    j[u] = "";
-			  }
-			  u = u+1;
-			}
-			k = j.join("\n");
-			k = k.replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n").replace(/\n\n/g, "\n");
-			if (k.length > 2039){
-			  k = k.substring(0,2039)+"...";
+		interaction.reply({ content: interaction.options.getString('word'), components: [row] });
+		const ud = require('urban-dictionary')
+		ud.define(interaction.options.getString('word'), (error, results) => {
+			if (error || results[0].example == "") {
+				interaction.followUp("Sorry, no matching definations were found");
+				return;
 			}
 			interaction.followUp({ embeds: [{
-			  color: '#221C35',
-			  description: "```"+k+"```"
+				color: '#221C35',
+				title: "Dictionary",
+				description: "```"+results[0].definition+"```",
+				fields: [
+					{
+						name: 'Example',
+						value: results[0].example
+					}
+			  	]
 			}]});
-		      }
-		    });
+		});
 	}else if (interaction.commandName === 'eval') {
 	    if (interaction.user.id == '597705976488919040'){
 		var exec = interaction.options.getString('code');
