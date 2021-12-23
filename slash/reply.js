@@ -819,7 +819,7 @@ client.on('interactionCreate', interaction => {
 			//extract player names
 			names = "";
 			if (response.players.sample.length > 0){
-			  names = "Players:";
+			  names = "Accounts:";
 			  x = 0;
 			  while (x < response.players.sample.length){
 			    names += " "+JSON.stringify(response.players.sample[x]["name"]);
