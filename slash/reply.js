@@ -732,7 +732,13 @@ client.on('interactionCreate', interaction => {
 				.setEmoji('🏓')
 				.setStyle('PRIMARY'),
 		);
-		interaction.reply({ content: "Websocket: "+client.ws.ping+"ms", components: [row] });
+		const ms = client.uptime;
+		const day = Math.floor(ms / (24*60*60*1000));
+		const dayms = ms % (24*60*60*1000);
+		const hour = Math.floor(dayms / (60*60*1000));
+		const hourms = ms % (60*60*1000);
+		const min = Math.floor(hourms / (60*1000));
+		interaction.reply({ content: "Websocket: "+client.ws.ping+"ms\nUptime: "+day+"d "+hour+"h "+min+"m", components: [row] });
 	}else if (interaction.commandName === 'flip') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
