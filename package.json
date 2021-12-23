@@ -15,14 +15,13 @@
     "discord.js": "^13.3.0",
     "discord-together": "^1.1.53",
     "bad-words": "^3.0.4",
-    "dns": "^0.2.2",
     "dotenv": "^10.0.0",
     "everyday-fun": "^1.1.0",
     "google": "^2.1.0",
     "minecraft-server-status-improved": "^1.0.4",
     "morse": "^0.1.0",
     "request": "^2.88.2",
-    "whois": "^2.13.7",
+    "urban": "^0.3.4",
     "wyr": "^1.0.2"
   },
   "devDependencies": {
