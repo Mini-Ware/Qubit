@@ -870,7 +870,7 @@ client.on('interactionCreate', interaction => {
 		ud.define(interaction.options.getString('word'), (error, results) => {
 			const Filter = require('bad-words');
 			const filter = new Filter();
-			if (error || results[0].example == "" || (interaction.options.getString('query') != filter.clean(interaction.options.getString('query')) && interaction.channel.nsfw != true)) {
+			if (error || results[0].example == "" || (interaction.options.getString('word') != filter.clean(interaction.options.getString('word')) && interaction.channel.nsfw != true)) {
 				interaction.followUp("Sorry, no matching definations were found");
 				return;
 			}
