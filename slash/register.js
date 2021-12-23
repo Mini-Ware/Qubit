@@ -69,7 +69,7 @@ var cmd = new SlashCommandBuilder().setName('eval').setDescription('Category: De
 		option.setName('code').setDescription('E.g. console.log("debug")').setRequired(true));
 commands.push(cmd.toJSON());
 var urban = new SlashCommandBuilder().setName('urban').setDescription('Category: Tool').addStringOption(option =>
-		option.setName('word').setDescription('E.g. space').setRequired(true));
+		option.setName('word').setDescription('E.g. kek').setRequired(true));
 commands.push(urban.toJSON());
 var mc = new SlashCommandBuilder().setName('mc').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('domain').setDescription('E.g. 2b2t.org').setRequired(true));
