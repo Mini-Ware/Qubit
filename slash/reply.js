@@ -496,41 +496,53 @@ client.on('interactionCreate', interaction => {
 			const mention = interaction.options.getString('string');
 			interaction.followUp(Buffer.from(mention, 'base64').toString('utf-8'));
 		}else if (interaction.options.getString('type') == "hex"){
-			const mention = interaction.options.getString('string');
-			interaction.followUp(Buffer.from(mention.replace(/ /g, ""), 'hex').toString('utf-8'));
-		}else if (interaction.options.getString('type') == "bin"){
-			const mention = interaction.options.getString('string').replace(/ /g, "");
-			var fullstr = "";
-			var n = 0;
-			var midstr = "";
-			var stastr = mention;
-			var b = 0;
-			var c = 0;
-			var a = 0;
-			var coolstr = "";
-			while (b < Math.round(mention.length/8)){
-			  coolstr = coolstr+stastr[a];
-			  a = a+1;
-			  c = c+1;
-			  if (c >= 8){
-			    c = 0;
-			    b = b+1;
-			    coolstr = coolstr+" ";
-			  }
-    			}
-			midstr = coolstr.split("").reverse().join("").substr(1).split("").reverse().join("").split(" ");
-			while (n <= (midstr.length-1)){
-			    fullstr += String.fromCharCode(parseInt(midstr[n], 2))
-			    n = n+1;
+			if (/^[a-fA-F0-9]+$/.test(interaction.options.getString('string')) == false){
+				interaction.followUp("Sorry, please enter a valid string");
+			}else{
+				const mention = interaction.options.getString('string');
+				interaction.followUp(Buffer.from(mention.replace(/ /g, ""), 'hex').toString('utf-8'));
 			}
-			interaction.followUp(fullstr);
+		}else if (interaction.options.getString('type') == "bin"){
+			if (/^[0-1]+$/.test(interaction.options.getString('string')) == false){
+				interaction.followUp("Sorry, please enter a valid string");
+			}else{
+				const mention = interaction.options.getString('string').replace(/ /g, "");
+				var fullstr = "";
+				var n = 0;
+				var midstr = "";
+				var stastr = mention;
+				var b = 0;
+				var c = 0;
+				var a = 0;
+				var coolstr = "";
+				while (b < Math.round(mention.length/8)){
+				  coolstr = coolstr+stastr[a];
+				  a = a+1;
+				  c = c+1;
+				  if (c >= 8){
+				    c = 0;
+				    b = b+1;
+				    coolstr = coolstr+" ";
+				  }
+				}
+				midstr = coolstr.split("").reverse().join("").substr(1).split("").reverse().join("").split(" ");
+				while (n <= (midstr.length-1)){
+				    fullstr += String.fromCharCode(parseInt(midstr[n], 2))
+				    n = n+1;
+				}
+				interaction.followUp(fullstr);
+			}
 		}else if (interaction.options.getString('type') == "url"){
 			const mention = interaction.options.getString('string');
 			interaction.followUp(decodeURIComponent(mention));
 		}else if (interaction.options.getString('type') == "morse"){
-			const mention = interaction.options.getString('string');
-			const morse = require('morse');
-			interaction.followUp(morse.decode(mention));
+			if (interaction.options.getString('string').replace(/-/g, "").replace(/./g, "") != ""){
+				interaction.followUp("Sorry, please enter a valid string");
+			}else{
+				const mention = interaction.options.getString('string');
+				const morse = require('morse');
+				interaction.followUp(morse.decode(mention));
+			}
 		}
 	}else if (interaction.commandName === 'help') {
 		const row = new MessageActionRow().addComponents(
@@ -826,10 +838,14 @@ client.on('interactionCreate', interaction => {
 			    x = x+1;
 			  }
 			}
+			var motd = response.motd;
+			if (motd == ""){
+				motd = response.motd_json;
+			}
 			interaction.followUp({ embeds: [{
 				color: '#221C35',
 				title: "Multiplayer",
-				description: "```"+response.motd+"```",
+				description: "```"+motd+"```",
 				fields: [
 					{
 						name: 'Version',
