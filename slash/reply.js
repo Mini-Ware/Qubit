@@ -537,7 +537,7 @@ client.on('interactionCreate', interaction => {
 			interaction.followUp(decodeURIComponent(mention));
 		}else if (interaction.options.getString('type') == "morse"){
 			if (interaction.options.getString('string').replace(/-/g, "").replace(/./g, "") != ""){
-				interaction.followUp("Sorry, please enter a valid morse string");
+				interaction.followUp("Sorry, please enter a valid morse code string");
 			}else{
 				const mention = interaction.options.getString('string');
 				const morse = require('morse');
