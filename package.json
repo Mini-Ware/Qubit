@@ -21,7 +21,7 @@
     "minecraft-server-status-improved": "^1.0.4",
     "morse": "^0.1.0",
     "request": "^2.88.2",
-    "urban": "^0.3.4",
+    "urban-dictionary": "^3.0.2"
     "wyr": "^1.0.2"
   },
   "devDependencies": {
