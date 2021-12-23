@@ -497,14 +497,14 @@ client.on('interactionCreate', interaction => {
 			interaction.followUp(Buffer.from(mention, 'base64').toString('utf-8'));
 		}else if (interaction.options.getString('type') == "hex"){
 			if (/^[a-fA-F0-9]+$/.test(interaction.options.getString('string')) == false){
-				interaction.followUp("Sorry, please enter a valid string");
+				interaction.followUp("Sorry, please enter a valid hexadecimal string");
 			}else{
 				const mention = interaction.options.getString('string');
 				interaction.followUp(Buffer.from(mention.replace(/ /g, ""), 'hex').toString('utf-8'));
 			}
 		}else if (interaction.options.getString('type') == "bin"){
 			if (/^[0-1]+$/.test(interaction.options.getString('string')) == false){
-				interaction.followUp("Sorry, please enter a valid string");
+				interaction.followUp("Sorry, please enter a valid binary string");
 			}else{
 				const mention = interaction.options.getString('string').replace(/ /g, "");
 				var fullstr = "";
@@ -537,7 +537,7 @@ client.on('interactionCreate', interaction => {
 			interaction.followUp(decodeURIComponent(mention));
 		}else if (interaction.options.getString('type') == "morse"){
 			if (interaction.options.getString('string').replace(/-/g, "").replace(/./g, "") != ""){
-				interaction.followUp("Sorry, please enter a valid string");
+				interaction.followUp("Sorry, please enter a valid morse string");
 			}else{
 				const mention = interaction.options.getString('string');
 				const morse = require('morse');
@@ -868,7 +868,9 @@ client.on('interactionCreate', interaction => {
 		interaction.reply({ content: interaction.options.getString('word'), components: [row] });
 		const ud = require('urban-dictionary')
 		ud.define(interaction.options.getString('word'), (error, results) => {
-			if (error || results[0].example == "") {
+			const Filter = require('bad-words');
+			const filter = new Filter();
+			if (error || results[0].example == "" || (interaction.options.getString('query') != filter.clean(interaction.options.getString('query')) && interaction.channel.nsfw != true)) {
 				interaction.followUp("Sorry, no matching definations were found");
 				return;
 			}
