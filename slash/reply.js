@@ -536,7 +536,7 @@ client.on('interactionCreate', interaction => {
 			const mention = interaction.options.getString('string');
 			interaction.followUp(decodeURIComponent(mention));
 		}else if (interaction.options.getString('type') == "morse"){
-			if (interaction.options.getString('string').replace(/-/g, "").replace(/./g, "") != ""){
+			if (/^[\-\.]+$/.test(interaction.options.getString('string')) == false){
 				interaction.followUp("Sorry, please enter a valid morse code string");
 			}else{
 				const mention = interaction.options.getString('string');
