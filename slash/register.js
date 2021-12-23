@@ -87,11 +87,11 @@ var wiki = new SlashCommandBuilder().setName('wiki').setDescription('Category: M
 		option.setName('query').setDescription('E.g. solar system').setRequired(true));
 commands.push(wiki.toJSON());
 var encode = new SlashCommandBuilder().setName('encode').setDescription('Category: Tool').addStringOption(option =>
-		option.setName('type').setDescription('E.g. b64').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
+		option.setName('type').setDescription('E.g. b64').addChoice('morse', 'morse').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
 		option.setName('string').setDescription('E.g. sample').setRequired(true));
 commands.push(encode.toJSON());
 var decode = new SlashCommandBuilder().setName('decode').setDescription('Category: Tool').addStringOption(option =>
-		option.setName('type').setDescription('E.g. b64').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
+		option.setName('type').setDescription('E.g. b64').addChoice('morse', 'morse').addChoice('url', 'url').addChoice('b64', 'b64').addChoice('bin', 'bin').addChoice('hex', 'hex').setRequired(true)).addStringOption(option =>
 		option.setName('string').setDescription('E.g. c2FtcGxl').setRequired(true));
 commands.push(decode.toJSON());
 
