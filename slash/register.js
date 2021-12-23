@@ -68,12 +68,9 @@ commands.push(decide.toJSON());
 var cmd = new SlashCommandBuilder().setName('eval').setDescription('Category: Dev').addStringOption(option =>
 		option.setName('code').setDescription('E.g. console.log("debug")').setRequired(true));
 commands.push(cmd.toJSON());
-var whois = new SlashCommandBuilder().setName('whois').setDescription('Category: Tool').addStringOption(option =>
-		option.setName('domain').setDescription('E.g. google.com').setRequired(true));
-commands.push(whois.toJSON());
-var ip = new SlashCommandBuilder().setName('ip').setDescription('Category: Tool').addStringOption(option =>
-		option.setName('domain').setDescription('E.g. google.com').setRequired(true));
-commands.push(ip.toJSON());
+var urban = new SlashCommandBuilder().setName('urban').setDescription('Category: Tool').addStringOption(option =>
+		option.setName('word').setDescription('E.g. space').setRequired(true));
+commands.push(urban.toJSON());
 var mc = new SlashCommandBuilder().setName('mc').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('domain').setDescription('E.g. 2b2t.org').setRequired(true));
 commands.push(mc.toJSON());
