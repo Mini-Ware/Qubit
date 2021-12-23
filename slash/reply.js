@@ -476,6 +476,14 @@ client.on('interactionCreate', interaction => {
 			}else{
 				interaction.followUp(encodeURIComponent(mention));
 			}
+		}else if (interaction.options.getString('type') == "morse"){
+			const mention = interaction.options.getString('string');
+			const morse = require('morse');
+			if (morse.encode(mention).length > 2000){
+				interaction.followUp("Sorry, the output is too large to display")
+			}else{
+				interaction.followUp(morse.encode(mention));
+			}
 		}
 	}else if (interaction.commandName === 'decode') {
 		const row = new MessageActionRow().addComponents(
@@ -520,6 +528,10 @@ client.on('interactionCreate', interaction => {
 		}else if (interaction.options.getString('type') == "url"){
 			const mention = interaction.options.getString('string');
 			interaction.followUp(decodeURIComponent(mention));
+		}else if (interaction.options.getString('type') == "morse"){
+			const mention = interaction.options.getString('string');
+			const morse = require('morse');
+			interaction.followUp(morse.decode(mention));
 		}
 	}else if (interaction.commandName === 'help') {
 		const row = new MessageActionRow().addComponents(
