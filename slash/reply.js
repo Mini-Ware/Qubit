@@ -825,35 +825,43 @@ client.on('interactionCreate', interaction => {
 		const mention = interaction.options.getString('domain');
 		    status(mention, 25565, (err, response) => {
 		      if (err || response.online == false){
-			interaction.followUp("Sorry, data is currently not avaliable");
+			interaction.channel.send("Sorry, data is currently not avaliable");
 		      }else{
 
 			//extract player names
 			names = "";
 			if (response.players.sample.length > 0){
-			  names = "Accounts:";
+			  names = "```";
 			  x = 0;
 			  while (x < response.players.sample.length){
-			    names += " "+JSON.stringify(response.players.sample[x]["name"]);
+			    names += "\n"+JSON.stringify(response.players.sample[x]["name"]);
 			    x = x+1;
 			  }
+			  names = names+"```";
+			}else{
+			  names = "```None```"
 			}
 			var motd = response.motd;
 			if (motd == ""){
 				motd = response.motd_json;
 			}
-			interaction.followUp({ embeds: [{
+			interaction.channel.send({ embeds: [{
 				color: '#221C35',
 				title: "Multiplayer",
 				description: "```"+motd+"```",
 				fields: [
 					{
-						name: 'Version',
-						value: response.server.name
-					},{
-						name: 'Players',
-						value: "Total: "+response.players.now+"/"+response.players.max+"\n"+names
-					}
+					    inline:true,
+					    name: 'Version',
+					    value: response.server.name
+					  },{
+					    inline:true,
+					    name: 'Players',
+					    value: "Total: "+response.players.now+"/"+response.players.max
+					  },{
+					    name: 'Accounts',
+					    value: names
+					  }
 			  	]
 			}]});
 		      }
