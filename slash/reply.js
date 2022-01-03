@@ -871,7 +871,7 @@ client.on('interactionCreate', interaction => {
 			const Filter = require('bad-words');
 			const filter = new Filter();
 			if (error || results[0].example == "" || (interaction.options.getString('word') != filter.clean(interaction.options.getString('word')) && interaction.channel.nsfw != true)) {
-				interaction.followUp("Sorry, no matching definations were found");
+				interaction.followUp("Sorry, no matching definitions were found");
 				return;
 			}
 			interaction.followUp({ embeds: [{
