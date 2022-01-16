@@ -1,0 +1,8 @@
+By using Qubit, you agree that you will
+- Not use it for any bad or illegal intentions
+- Attempting a DoS attack (flooding the bot with too many requests until it crash)
+- Exploit any loopholes in the bot and instead report it immediately by opening an issue here
+
+If you are found doing any of the above, you may be subjected to the following
+- Banned from using the bot
+- Restricted from using certain commands
