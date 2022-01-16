@@ -1,2 +1,2 @@
 Qubit does not store any user information as I respect user's privacy.
-It has also migrated to slash commands and no interactions with the bot will be recorded or stored in any form anywhere.
+It has also migrated to slash commands and no interactions with Qubit will be recorded or stored in any form at anywhere.
