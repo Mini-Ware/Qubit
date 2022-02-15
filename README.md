@@ -1,5 +1,5 @@
 # Qubit
-Space themed bot which can start a game of chess/poker, generate riddles/jokes/quotes and search for playlists/videos from Spotify/YouTube</br></br>
+Space themed bot which can generate riddles/jokes/quotes and search for playlists/videos from Spotify/YouTube</br></br>
 [![Discord Bots](https://top.gg/api/widget/status/826031374766440459.svg)](https://top.gg/bot/826031374766440459)
 [![Discord Bots](https://top.gg/api/widget/servers/826031374766440459.svg)](https://top.gg/bot/826031374766440459)
 [![Discord Bots](https://top.gg/api/widget/owner/826031374766440459.svg)](https://top.gg/bot/826031374766440459)</br></br>
