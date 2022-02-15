@@ -28,7 +28,7 @@ commands.push(icon.toJSON());
 var emoji = new SlashCommandBuilder().setName('emoji').setDescription('Category: Media').addStringOption(option =>
 		option.setName('emote').setDescription('E.g. :thonk:').setRequired(true));
 commands.push(emoji.toJSON());
-var fishing = new SlashCommandBuilder().setName('fishing').setDescription('Category: Activity');
+/*var fishing = new SlashCommandBuilder().setName('fishing').setDescription('Category: Activity');
 commands.push(fishing.toJSON());
 var betray = new SlashCommandBuilder().setName('betray').setDescription('Category: Activity');
 commands.push(betray.toJSON());
@@ -37,7 +37,7 @@ commands.push(poker.toJSON());
 var chess = new SlashCommandBuilder().setName('chess').setDescription('Category: Activity');
 commands.push(chess.toJSON());
 var ytt = new SlashCommandBuilder().setName('ytt').setDescription('Category: Activity');
-commands.push(ytt.toJSON());
+commands.push(ytt.toJSON());*/
 var rather = new SlashCommandBuilder().setName('wyr').setDescription('Category: Fun');
 commands.push(rather.toJSON());
 var pickup = new SlashCommandBuilder().setName('pickup').setDescription('Category: Fun');
