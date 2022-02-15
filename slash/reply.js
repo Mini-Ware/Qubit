@@ -594,7 +594,7 @@ client.on('interactionCreate', interaction => {
 				}
 		  	]
 		    }], components: [row] });
-	}else if (interaction.commandName === 'fishing') {
+	}/*else if (interaction.commandName === 'fishing') {
 		const row = new MessageActionRow().addComponents(
 			new MessageButton()
 				.setCustomId('primary')
@@ -684,7 +684,7 @@ client.on('interactionCreate', interaction => {
 		}else{
 		  interaction.reply({ content: "Sorry, you are required to join a voice channel", components: [row] });
 		}
-	}else if (interaction.commandName === 'invite') {
+	}*/else if (interaction.commandName === 'invite') {
 		interaction.reply({ content: 'https://dsc.gg/qubit' });
 	}else if (interaction.commandName === 'project') {
 		interaction.reply({ content: 'https://github.com/Mini-Ware/Qubit' });
