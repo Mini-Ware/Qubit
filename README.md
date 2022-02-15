@@ -8,7 +8,6 @@ Qubit is a simple yet powerful space themed discord utility bot which can start 
 Random: decide, dice, 8ball, flip, quote</br>
 Fun: wyr, riddle, joke, roast, pickup</br>
 Media: spotify, youtube, wiki, emoji, icon</br>
-Activity (Experimental): ytt, chess, poker, betray, fishing</br>
 Tool: ping, mc, urban, encode, decode</br></br>
 More improvements will be added frequently!!</br></br>
  [Add Qubit into your server](https://dsc.gg/qubit) | [Verified by Top.gg](https://top.gg/bot/826031374766440459)
