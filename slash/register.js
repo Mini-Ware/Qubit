@@ -68,6 +68,12 @@ commands.push(decide.toJSON());
 var cmd = new SlashCommandBuilder().setName('eval').setDescription('Category: Dev').addStringOption(option =>
 		option.setName('code').setDescription('E.g. console.log("debug")').setRequired(true));
 commands.push(cmd.toJSON());
+var py = new SlashCommandBuilder().setName('python').setDescription('Category: Dev').addStringOption(option =>
+		option.setName('code').setDescription('E.g. print("Hello world!")').setRequired(true));
+commands.push(py.toJSON());
+var sh = new SlashCommandBuilder().setName('bash').setDescription('Category: Dev').addStringOption(option =>
+		option.setName('code').setDescription('E.g. echo "Hello world!"').setRequired(true));
+commands.push(sh.toJSON());
 var urban = new SlashCommandBuilder().setName('urban').setDescription('Category: Tool').addStringOption(option =>
 		option.setName('word').setDescription('E.g. kek').setRequired(true));
 commands.push(urban.toJSON());
