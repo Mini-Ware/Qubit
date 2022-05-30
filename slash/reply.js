@@ -573,7 +573,7 @@ client.on('interactionCreate', interaction => {
 		      inline: false,
 				},
 		    {
-					name: '[#️⃣] Fun',
+					name: '[🔤] Fun',
 					value: '`wyr`, `riddle`, `joke`, `roast`, `pickup`',
 					inline: false,
 				},
