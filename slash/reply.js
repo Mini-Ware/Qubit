@@ -932,5 +932,51 @@ client.on('interactionCreate', interaction => {
 		);
 	      interaction.reply({ content: "Access denied", components: [row] });
 	    }
+	}else if (interaction.commandName === 'python') {
+		var exec = interaction.options.getString('code');
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('primary')
+				.setEmoji('🐍')
+				.setStyle('PRIMARY'),
+		);
+		interaction.reply({ content: '```py\n'+exec+'\n```', components: [row] });
+		
+		var body = {
+		    "language": "py",
+		    "version": "3.10.0",
+		    "files": [
+			{
+			    "name": "main.py",
+			    "content": exec
+			}
+		    ]
+		}
+		fetch('https://emkc.org/api/v2/piston/execute', {
+			method: 'post',
+			body: JSON.stringify(body),
+			headers: {'Content-Type': 'application/json'}
+		}).then( res => res.json()).then( result => {
+			if (typeof(result["run"]) != "undefined"){
+				if (result["run"]["stdout"] == ""){ result["run"]["stdout"] = "None" }
+				if (result["run"]["stderr"] == ""){ result["run"]["stderr"] = "None" }
+				interaction.channel.send({ embeds: [{
+					color: '#221C35',
+					title: "Result",
+					description: "`Exited with code "+result["run"]["code"].toString()+"`",
+					fields: [
+						{
+							name: 'Output',
+							value: '```'+result["run"]["stdout"].replace(/`/g, "\`")+'```'
+						},
+						{
+							name: 'Errors',
+							value: '```'+result["run"]["stderr"].replace(/`/g, "\`")+'```'
+						}
+					]
+				}]});
+			}
+		});
+	
 	}
 });
