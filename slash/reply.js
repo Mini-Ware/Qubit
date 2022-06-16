@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const google = require('google');
-const wyr = require('wyr').default;
+const wyr = require('wyr');
 const all = require("everyday-fun");
 const status = require('minecraft-server-status-improved');
 const fs = require('fs');
