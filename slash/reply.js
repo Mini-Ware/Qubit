@@ -960,21 +960,34 @@ client.on('interactionCreate', interaction => {
 			if (typeof(result["run"]) != "undefined"){
 				if (result["run"]["stdout"] == ""){ result["run"]["stdout"] = "None" }
 				if (result["run"]["stderr"] == ""){ result["run"]["stderr"] = "None" }
-				interaction.channel.send({ embeds: [{
-					color: '#221C35',
-					title: "Result",
-					description: "`Exited with code "+result["run"]["code"].toString()+"`",
-					fields: [
-						{
-							name: 'Output',
-							value: '```'+result["run"]["stdout"].replace(/`/g, "\`")+'```'
-						},
-						{
-							name: 'Errors',
-							value: '```'+result["run"]["stderr"].replace(/`/g, "\`")+'```'
-						}
-					]
-				}]});
+				try{
+					interaction.channel.send({ embeds: [{
+						color: '#221C35',
+						title: "Result",
+						description: "`Exited with code "+result["run"]["code"].toString()+"`",
+						fields: [
+							{
+								name: 'Output',
+								value: '```'+result["run"]["stdout"].replace(/`/g, "\`")+'```'
+							},
+							{
+								name: 'Errors',
+								value: '```'+result["run"]["stderr"].replace(/`/g, "\`")+'```'
+							}
+						]
+					}]});
+				} catch (err) {
+				      if (err){
+					const row = new MessageActionRow().addComponents(
+						new MessageButton()
+							.setCustomId('primary')
+							.setEmoji('⚠️')
+							.setStyle('PRIMARY'),
+					);
+				      interaction.followUp({ content: "Sorry, an error has occurred", components: [row] });
+				      return;
+				    }
+				  }
 			}
 		});
 	
@@ -1006,21 +1019,35 @@ client.on('interactionCreate', interaction => {
 			if (typeof(result["run"]) != "undefined"){
 				if (result["run"]["stdout"] == ""){ result["run"]["stdout"] = "None" }
 				if (result["run"]["stderr"] == ""){ result["run"]["stderr"] = "None" }
-				interaction.channel.send({ embeds: [{
-					color: '#221C35',
-					title: "Result",
-					description: "`Exited with code "+result["run"]["code"].toString()+"`",
-					fields: [
-						{
-							name: 'Output',
-							value: '```'+result["run"]["stdout"].replace(/`/g, "\`")+'```'
-						},
-						{
-							name: 'Errors',
-							value: '```'+result["run"]["stderr"].replace(/`/g, "\`")+'```'
-						}
-					]
-				}]});
+				
+				try{
+					interaction.channel.send({ embeds: [{
+						color: '#221C35',
+						title: "Result",
+						description: "`Exited with code "+result["run"]["code"].toString()+"`",
+						fields: [
+							{
+								name: 'Output',
+								value: '```'+result["run"]["stdout"].replace(/`/g, "\`")+'```'
+							},
+							{
+								name: 'Errors',
+								value: '```'+result["run"]["stderr"].replace(/`/g, "\`")+'```'
+							}
+						]
+					}]});
+				} catch (err) {
+				      if (err){
+					const row = new MessageActionRow().addComponents(
+						new MessageButton()
+							.setCustomId('primary')
+							.setEmoji('⚠️')
+							.setStyle('PRIMARY'),
+					);
+				      interaction.followUp({ content: "Sorry, an error has occurred", components: [row] });
+				      return;
+				    }
+				  }
 			}
 		});
 	}
