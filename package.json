@@ -1,33 +1,36 @@
 {
-  "name": "Qubit",
+  "name": "qubit",
   "version": "1.0.0",
-  "main": "index.js",
-  "author": "Mini-Ware",
-  "license": "MIT",
+  "description": "A simple yet powerful space themed discord utility bot ",
+  "type": "module",
+  "private": true,
+  "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon .",
-    "start": "node ."
+    "start": "node src/server.js",
+    "dev": "wrangler dev src/server.js",
+    "ngrok": "ngrok http 8787",
+    "test": "c8 mocha test",
+    "fix": "eslint --fix '**/*.js'",
+    "lint": "eslint '**/*.js'",
+    "register": "node src/register.js",
+    "publish": "wrangler deploy"
   },
+  "keywords": [],
+  "author": "Mini-Ware <privacy_mini@pm.me>",
+  "license": "Apache-2.0",
   "dependencies": {
-    "@discordjs/builders": "^0.8.1",
-    "@discordjs/rest": "^0.1.0-canary.0",
-    "discord-api-types": "^0.24.0",
-    "discord.js": "^13.3.0",
-    "discord-together": "^1.1.53",
-    "bad-words": "^3.0.4",
-    "dotenv": "^10.0.0",
-    "everyday-fun": "^1.1.0",
-    "google": "^2.1.0",
-    "minecraft-server-status-improved": "^1.0.4",
-    "morse": "^0.1.0",
-    "request": "^2.88.2",
-    "urban-dictionary": "^3.0.2"
-    "wyr": "^1.0.2"
+    "discord-interactions": "^3.4.0",
+    "itty-router": "^3.0.12"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
-  },
-  "engines": {
-    "node": ">=16.6.0"
+    "c8": "^7.13.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "mocha": "^10.2.0",
+    "ngrok": "^5.0.0-beta.2",
+    "prettier": "^2.8.8",
+    "wrangler": "^3.0.1"
   }
 }
