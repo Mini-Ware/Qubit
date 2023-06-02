@@ -64,7 +64,7 @@ router.post('/', async (request, env) => {
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            content: articles,
+            enbeds: [articles]
           },
         });
       }
@@ -74,7 +74,7 @@ router.post('/', async (request, env) => {
 
         //creating embed
         const helpEmbed = {
-          color: 0x0099ff,
+          color: 0x221c35,
           title: 'Qubit',
 /*           url: 'https://discord.js.org',
           author: {
@@ -83,21 +83,21 @@ router.post('/', async (request, env) => {
             url: 'https://discord.js.org',
           }, */
           description: 'A simple yet powerful space themed discord utility bot',
-/*           thumbnail: {
-            url: 'https://i.imgur.com/AfFp7pu.png',
-          }, */
+          thumbnail: {
+            url: 'https://cdn.discordapp.com/avatars/826031374766440459/37a324d853cade9ee8fdd5b2b8e40ce7.webp?size=1024',
+          },
           fields: [
             {
+              name: 'Important Notice',
+              value: '> This project is no longer actively maintained, but it will still continue to support a limited set of features. Stay updated about the latest changes on GitHub.',
+            },
+            {
               name: 'Commands',
-              value: '`/help` `/news`',
+              value: '`/help` - list of commands\n`/news` - fetch some articles',
             },
             {
               name: 'Source Code',
-              value: 'GitHub repository: https://github.com/mini-ware/qubit',
-            },
-            {
-              name: 'Note',
-              value: 'This project is no longer actively maintained, but it will still continue to support a limited set of features',
+              value: 'https://github.com/mini-ware/qubit',
             }
           ],
 /*           image: {

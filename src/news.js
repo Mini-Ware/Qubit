@@ -5,25 +5,30 @@
  * @returns The url of an image or video which is cute.
  */
 export async function getArticles() {
-  const response = await fetch('https://www.reddit.com/r/aww/hot.json', {
-    headers: {
-      'User-Agent': 'justinbeckwith:awwbot:v1.0.0 (by /u/justinblat)',
-    },
-  });
+  const response = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=3');
   const data = await response.json();
-  const posts = data.data.children
-    .map((post) => {
-      if (post.is_gallery) {
-        return '';
+  const articles = data.results
+
+  //articles embed
+  const articlesEmbed = {
+    color: 0x221c35,
+    title: 'Stay Informed',
+    description: 'Here is our selection of the most recent space happenings',
+    fields: [
+      {
+        name: articles[0].title,
+        value: articles[0].summary
+      },
+      {
+        name: articles[1].title,
+        value: articles[1].summary
+      },
+      {
+        name: articles[2].title,
+        value: articles[2].summary
       }
-      return (
-        post.data?.media?.reddit_video?.fallback_url ||
-        post.data?.secure_media?.reddit_video?.fallback_url ||
-        post.data?.url
-      );
-    })
-    .filter((post) => !!post);
-  const randomIndex = Math.floor(Math.random() * posts.length);
-  const randomPost = posts[randomIndex];
-  return randomPost;
+    ]
+  };
+
+  return articlesEmbed
 }
