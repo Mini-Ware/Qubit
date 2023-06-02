@@ -1,5 +1,5 @@
 # Qubit
-Qubit is a simple yet powerful space themed discord utility bot</br></br>
+A simple yet powerful space themed discord utility bot</br></br>
 [![Discord Bots](https://top.gg/api/widget/status/826031374766440459.svg)](https://top.gg/bot/826031374766440459)
 [![Discord Bots](https://top.gg/api/widget/servers/826031374766440459.svg)](https://top.gg/bot/826031374766440459)
 [![Discord Bots](https://top.gg/api/widget/owner/826031374766440459.svg)](https://top.gg/bot/826031374766440459)</br></br>
