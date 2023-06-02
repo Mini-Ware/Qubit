@@ -5,7 +5,11 @@
  * @returns The url of an image or video which is cute.
  */
 export async function getArticles() {
-  const response = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=3');
+  const response = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=3', {
+    headers: {
+      'User-Agent': 'mini:qubit:v2.0.0',
+    },
+  });
   const data = await response.json();
   const articles = data.results
 
