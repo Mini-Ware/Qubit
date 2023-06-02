@@ -1,4 +1,4 @@
-import { AWW_COMMAND, INVITE_COMMAND } from './commands.js';
+import { NEWS_COMMAND, HELP_COMMAND } from './commands.js';
 import dotenv from 'dotenv';
 import process from 'node:process';
 
