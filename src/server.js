@@ -61,10 +61,32 @@ router.post('/', async (request, env) => {
       case NEWS_COMMAND.name.toLowerCase(): {
         console.log('handling news request');
         const articles = await getArticles();
+
+        //articles embed
+        const articlesEmbed = {
+          color: 0x221c35,
+          title: 'Stay Informed',
+          description: 'Here is our selection of the most recent space happenings',
+          fields: [
+            {
+              name: articles[0].title,
+              value: articles[0].summary
+            },
+            {
+              name: articles[1].title,
+              value: articles[1].summary
+            },
+            {
+              name: articles[2].title,
+              value: articles[2].summary
+            }
+          ]
+        };
+
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            enbeds: [articles]
+            enbeds: [articlesEmbed]
           },
         });
       }
