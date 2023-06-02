@@ -13,7 +13,7 @@
     "fix": "eslint --fix '**/*.js'",
     "lint": "eslint '**/*.js'",
     "register": "node src/register.js",
-    "publish": "wrangler deploy src/server.js --compatibility-date 2023-06-02"
+    "publish": "wrangler deploy src/server.js --compatibility-date 2023-06-02 --name qubit"
   },
   "keywords": [],
   "author": "Mini-Ware <privacy_mini@pm.me>",
