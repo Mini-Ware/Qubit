@@ -65,19 +65,19 @@ router.post('/', async (request, env) => {
         //articles embed
         const articlesEmbed = {
           color: 0x221c35,
-          title: 'Stay Informed',
+          title: 'Latest News',
           description: 'Here is our selection of the most recent space happenings',
           fields: [
             {
-              name: articles[0].title,
+              name: "[["+articles[0].news_site+"]]("+articles[0].url+") "+articles[0].title,
               value: articles[0].summary
             },
             {
-              name: articles[1].title,
+              name: "[["+articles[1].news_site+"]]("+articles[1].url+") "+articles[1].title,
               value: articles[1].summary
             },
             {
-              name: articles[2].title,
+              name: "[["+articles[2].news_site+"]]("+articles[2].url+") "+articles[2].title,
               value: articles[2].summary
             }
           ]
