@@ -71,11 +71,51 @@ router.post('/', async (request, env) => {
       case HELP_COMMAND.name.toLowerCase(): {
         const applicationId = env.DISCORD_APPLICATION_ID;
         const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
+
+        //creating embed
+        const helpEmbed = {
+          color: 0x0099ff,
+          title: 'Qubit',
+/*           url: 'https://discord.js.org',
+          author: {
+            name: 'Some name',
+            icon_url: 'https://i.imgur.com/AfFp7pu.png',
+            url: 'https://discord.js.org',
+          }, */
+          description: 'A simple yet powerful space themed discord utility bot',
+/*           thumbnail: {
+            url: 'https://i.imgur.com/AfFp7pu.png',
+          }, */
+          fields: [
+            {
+              name: 'Commands',
+              value: '`/help` `/news`',
+            },
+            {
+              name: 'Source Code',
+              value: 'GitHub repository: https://github.com/mini-ware/qubit',
+            },
+            {
+              name: 'Note',
+              value: 'This project is no longer actively maintained, but it will still continue to support a limited set of features',
+            }
+          ],
+/*           image: {
+            url: 'https://i.imgur.com/AfFp7pu.png',
+          }, */
+/*           timestamp: new Date().toISOString(),
+          footer: {
+            text: 'Some footer text here',
+            icon_url: 'https://i.imgur.com/AfFp7pu.png',
+          }, */
+        };
+
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            content: INVITE_URL,
-            flags: InteractionResponseFlags.EPHEMERAL,
+            embeds: [helpEmbed]
+/*             content: INVITE_URL,
+            flags: InteractionResponseFlags.EPHEMERAL, */
           },
         });
       }
