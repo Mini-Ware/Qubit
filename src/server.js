@@ -69,7 +69,7 @@ router.post('/', async (request, env) => {
         });
       }
       case HELP_COMMAND.name.toLowerCase(): {
-        const applicationId = env.DISCORD_APPLICATION_ID;
+/*         const applicationId = env.DISCORD_APPLICATION_ID; */
 /*         const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`; */
 
         //creating embed
