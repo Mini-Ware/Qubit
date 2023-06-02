@@ -13,7 +13,7 @@
     "fix": "eslint --fix '**/*.js'",
     "lint": "eslint '**/*.js'",
     "register": "node src/register.js",
-    "publish": "wrangler deploy"
+    "publish": "wrangler deploy src/server.js"
   },
   "keywords": [],
   "author": "Mini-Ware <privacy_mini@pm.me>",
