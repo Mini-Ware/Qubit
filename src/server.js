@@ -10,7 +10,7 @@ import {
 } from 'discord-interactions';
 import { NEWS_COMMAND, HELP_COMMAND } from './commands.js';
 import { getArticles } from './news.js';
-import { InteractionResponseFlags } from 'discord-interactions';
+/* import { InteractionResponseFlags } from 'discord-interactions'; */
 
 class JsonResponse extends Response {
   constructor(body, init) {
@@ -70,7 +70,7 @@ router.post('/', async (request, env) => {
       }
       case HELP_COMMAND.name.toLowerCase(): {
         const applicationId = env.DISCORD_APPLICATION_ID;
-        const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
+/*         const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`; */
 
         //creating embed
         const helpEmbed = {
